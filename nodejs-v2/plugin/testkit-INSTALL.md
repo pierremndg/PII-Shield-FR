@@ -6,7 +6,6 @@ Contents:
 |---|---|
 | `pii-shield-v2.0.2.mcpb` | MCP server bundle for Windows / legacy hosts |
 | `pii-shield-v2.0.2-darwin-universal.mcpb` | MCP server bundle for macOS (bundled Node runtime) |
-| `pii-contract-analyze.skill` | Skill file (the workflow / prompts) |
 | `install-model.ps1` / `.bat` | Model downloader — Windows |
 | `install-model.sh` / `.command` | Model downloader — macOS / Linux |
 
@@ -34,13 +33,12 @@ Final output:
 
 ## Step 2 — Install the artifacts
 
-Choose one MCP server bundle for your OS, plus the skill. Install order does not matter:
+Choose one MCP server bundle for your OS. Install order does not matter:
 
 - **Windows / legacy hosts**: install **`pii-shield-v2.0.2.mcpb`**.
 - **macOS**: install **`pii-shield-v2.0.2-darwin-universal.mcpb`**. It bundles Node.js so Claude Desktop does not use its built-in Node launch path.
-- **`pii-contract-analyze.skill`** — the skill (SKILL.md + references).
 
-Drop the chosen MCPB and the skill into your Claude host (Desktop / Cowork / etc.) per the host's extension-install UI.
+Drop the chosen MCPB into your Claude host (Desktop / Cowork / etc.) per the host's extension-install UI.
 
 ## Step 3 — Use it
 

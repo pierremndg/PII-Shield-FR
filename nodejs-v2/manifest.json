@@ -1,13 +1,18 @@
 {
   "manifest_version": "0.3",
-  "name": "pii-shield-v2",
-  "display_name": "PII Shield v2",
-  "version": "2.2.0",
-  "description": "Anonymize PII in documents. Requires one-time model install via PowerShell/bash one-liner — see README for 3-step setup. Pure Node.js, no Python dependency.",
-  "long_description": "MCP server that anonymizes documents before Claude sees them and restores real data after analysis. PII never enters the API — only file paths and session IDs are exchanged. Uses GLiNER zero-shot NER via ONNX Runtime for high-quality entity recognition in legal documents, with Human-in-the-Loop review via an in-chat MCP Apps panel (no browser required). Supports PDF, DOCX (with tracked changes / redline), and plain text. Includes 17 EU pattern recognizers, entity deduplication, chunked processing for large documents, and full local audit logging. The GLiNER model (~634 MB) is installed separately via `install-model.ps1` (Windows) or `install-model.sh` (macOS/Linux) — one command, ~2-5 min. This keeps the plugin tiny (<2 MB, instant install in Claude Desktop) and decouples model updates from code. First-run also installs native npm deps (onnxruntime-node + transformers, ~1–2 min). Pure Node.js, no Python dependency.",
+  "name": "pii-shield-fr",
+  "display_name": "PII Shield FR",
+  "version": "2.2.0-fr.1",
+  "description": "Anonymize PII in documents. Requires a one-time model install (in-chat install panel, see README). Pure Node.js, no Python dependency.",
+  "long_description": "MCP server that anonymizes documents before Claude sees them and restores real data after analysis. PII never enters the API — only file paths and session IDs are exchanged. Uses GLiNER zero-shot NER via ONNX Runtime for high-quality entity recognition in legal documents, with Human-in-the-Loop review via an in-chat MCP Apps panel (no browser required). Supports PDF, DOCX (with tracked changes / redline), and plain text. Includes 17 EU pattern recognizers, entity deduplication, chunked processing for large documents, and full local audit logging. The GLiNER model (~935 MB, 892 MiB) is installed separately: the in-chat install panel installs the zip from the release, or `install-model.ps1` downloads it from Hugging Face. This keeps the plugin tiny (<2 MB, instant install in Claude Desktop) and decouples model updates from code. First-run also installs native npm deps (onnxruntime-node + transformers, ~1–2 min). Pure Node.js, no Python dependency.",
   "author": {
-    "name": "Grigorii Moskalev",
-    "url": "https://www.linkedin.com/in/grigorii-moskalev/"
+    "name": "pierremndg",
+    "url": "https://github.com/pierremndg"
+  },
+  "homepage": "https://github.com/pierremndg/PII-Shield-FR",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pierremndg/PII-Shield-FR"
   },
   "server": {
     "type": "node",
@@ -22,6 +27,7 @@
         "PII_NER_THRESHOLD": "${user_config.ner_threshold}",
         "PII_WORK_DIR": "${user_config.work_dir}",
         "PII_SKIP_REVIEW": "${user_config.skip_review}",
+        "PII_MASK_COURTS": "${user_config.mask_courts}",
         "PII_SHIELD_MODELS_DIR": "${user_config.models_path}",
         "PII_SHIELD_MODEL_DOWNLOADS_DIR": "${user_config.model_downloads_dir}"
       },
@@ -48,8 +54,8 @@
     {"name": "list_entities", "description": "Show status, supported types, and recent sessions"},
     {"name": "start_review", "description": "Open the HITL review panel in the chat (MCP Apps iframe). PII stays on your machine — decisions travel back via apply_review_overrides."},
     {"name": "apply_review_overrides", "description": "Apply the user's review decisions (remove false positives, add missed entities). Called by the review panel when the user clicks Approve."},
-    {"name": "start_model_setup", "description": "Open the in-chat install panel for the GLiNER model (MCP Apps iframe). Two buttons: Download (host opens release URL in browser, browser handles 634 MB transfer) and Install (server auto-detects ZIP in Downloads / OneDrive / Desktop / etc., extracts into ~/.pii_shield/models/). Call when list_entities returns phase: 'needs_setup'."},
-    {"name": "install_model_from_download", "description": "Server tool called by the setup panel after the user downloads gliner-pii-base-v1.0.zip. Finds the ZIP via 3-tier search (candidate dirs / marker BFS / configured folder), validates, atomic-extracts, re-inits NER."},
+    {"name": "start_model_setup", "description": "Open the in-chat install panel for the GLiNER model (MCP Apps iframe). Two buttons: Download (host opens release URL in browser, browser handles 935 MB transfer) and Install (server auto-detects ZIP in Downloads / OneDrive / Desktop / etc., extracts into ~/.pii_shield/models/). Call when list_entities returns phase: 'needs_setup'."},
+    {"name": "install_model_from_download", "description": "Server tool called by the setup panel after the user downloads gliner_multi_pii-v1.zip. Finds the ZIP via 3-tier search (candidate dirs / marker BFS / configured folder), validates, atomic-extracts, re-inits NER."},
     {"name": "anonymize_next_chunk", "description": "Process next chunk of a chunked anonymization session."},
     {"name": "get_full_anonymized_text", "description": "Assemble all processed chunks and finalize the anonymization."},
     {"name": "resolve_path", "description": "Zero-config file path resolution via marker file BFS."},
@@ -86,17 +92,24 @@
       "default": "false",
       "required": false
     },
+    "mask_courts": {
+      "type": "string",
+      "title": "Mask court names",
+      "description": "Set to 'true' to mask French court names (Tribunal de commerce, Cour d'appel, Conseil de prud'hommes...). Default 'false': the court name stays visible, only the city that follows is masked.",
+      "default": "false",
+      "required": false
+    },
     "models_path": {
       "type": "directory",
       "title": "GLiNER model directory (optional)",
-      "description": "Folder containing gliner-pii-base-v1.0/ (the model + 4 tokenizer files). Leave empty to auto-detect in ~/.pii_shield/models/ (the default location used by install-model.ps1 / install-model.sh).",
+      "description": "Folder containing gliner_multi_pii-v1/ (the model + 4 tokenizer files). Leave empty to auto-detect in ~/.pii_shield/models/ (the default location used by install-model.ps1 / install-model.sh).",
       "default": "",
       "required": false
     },
     "model_downloads_dir": {
       "type": "directory",
       "title": "Model downloads folder (rare override)",
-      "description": "Folder to scan for gliner-pii-base-v1.0.zip (the install panel's auto-detect). Leave empty unless your browser saves files somewhere unusual — by default the install panel finds the ZIP in ~/Downloads, OneDrive variants, Desktop, Documents, the Windows Known Folder Downloads path, and the localized XDG Downloads on Linux.",
+      "description": "Folder to scan for gliner_multi_pii-v1.zip (the install panel's auto-detect). Leave empty unless your browser saves files somewhere unusual — by default the install panel finds the ZIP in ~/Downloads, OneDrive variants, Desktop, Documents, the Windows Known Folder Downloads path, and the localized XDG Downloads on Linux.",
       "default": "",
       "required": false
     }

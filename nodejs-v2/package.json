@@ -1,6 +1,6 @@
 {
   "name": "pii-shield",
-  "version": "2.2.0",
+  "version": "2.2.0-fr.1",
   "type": "module",
   "description": "Anonymize PII in legal documents locally — Node.js CLI (GLiNER NER, EU/UK/US/FI patterns, .docx/.pdf/.txt, HITL review). MCP plugin distributed separately as a .mcpb.",
   "keywords": [
@@ -14,13 +14,13 @@
     "cli",
     "privacy"
   ],
-  "homepage": "https://github.com/gregmos/PII-Shield#readme",
+  "homepage": "https://github.com/pierremndg/PII-Shield-FR#readme",
   "bugs": {
-    "url": "https://github.com/gregmos/PII-Shield/issues"
+    "url": "https://github.com/pierremndg/PII-Shield-FR/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gregmos/PII-Shield.git",
+    "url": "git+https://github.com/pierremndg/PII-Shield-FR.git",
     "directory": "nodejs-v2"
   },
   "publishConfig": {

@@ -10,9 +10,8 @@
  * scripts are executable without a manual `chmod +x`.
  *
  * Inputs (must exist before this script runs — usually after `build-plugin.mjs`):
- *   - dist/pii-shield-v{VERSION}.mcpb              (from build-plugin step 4)
+ *   - dist/pii-shield-fr-v{VERSION}.mcpb              (from build-plugin step 4)
  *   - dist/pii-shield-v{VERSION}-darwin-universal.mcpb (optional macOS binary bundle)
- *   - plugin/skills/pii-contract-analyze.zip      (skill bundle, prebuilt)
  *   - scripts/install-model.{ps1,bat,sh,command}  (user-facing model installer)
  *   - plugin/testkit-INSTALL.md                   (3-step install guide)
  *
@@ -47,19 +46,14 @@ async function main() {
 
   const inputs = [
     {
-      name: `pii-shield-v${VERSION}.mcpb`,
-      src: path.join(DIST, `pii-shield-v${VERSION}.mcpb`),
+      name: `pii-shield-fr-v${VERSION}.mcpb`,
+      src: path.join(DIST, `pii-shield-fr-v${VERSION}.mcpb`),
       required: true,
     },
     {
       name: `pii-shield-v${VERSION}-darwin-universal.mcpb`,
       src: path.join(DIST, `pii-shield-v${VERSION}-darwin-universal.mcpb`),
       required: false,
-    },
-    {
-      name: "pii-contract-analyze.skill",
-      src: path.join(ROOT, "plugin/skills/pii-contract-analyze.zip"),
-      required: true,
     },
     { name: "install-model.ps1",     src: path.join(ROOT, "scripts/install-model.ps1"),     required: true },
     { name: "install-model.bat",     src: path.join(ROOT, "scripts/install-model.bat"),     required: true },
