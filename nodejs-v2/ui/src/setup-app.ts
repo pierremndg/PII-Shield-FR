@@ -4,12 +4,12 @@
  * Three-step UI rendered for `ui://pii-shield/setup.html`:
  *   1. Click "Download model" — calls `app.openLink({ url: MODEL_ZIP_URL })`,
  *      the host opens it in the user's default browser. The browser handles
- *      the 634 MB download (Defender treats it like any normal browser file,
+ *      the 935 MB (892 MiB) download (Defender treats it like any normal browser file,
  *      no SmartScreen on an unsigned process).
  *   2. Click "Install downloaded ZIP" — calls the server tool
  *      `install_model_from_download`. The server scans Downloads / OneDrive /
- *      Desktop / etc. for `gliner-pii-base-v1.0*.zip`, validates, atomic-moves
- *      into `~/.pii_shield/models/gliner-pii-base-v1.0/`, re-inits NER.
+ *      Desktop / etc. for `gliner_multi_pii-v1*.zip`, validates, atomic-moves
+ *      into `~/.pii_shield/models/gliner_multi_pii-v1/`, re-inits NER.
  *   3. "Check status" — calls `list_entities`. When phase = "ready", we flash
  *      the "Model installed" overlay and the user can dismiss the panel.
  *
@@ -23,13 +23,11 @@ import "./setup.css";
 // ── Constants ───────────────────────────────────────────────────────────────
 
 /**
- * Release-asset URL for the model zip. Currently points at the staging repo
- * for the v2.0.2 dry-run; flipped to the public `gregmos/PII-Shield` host
- * when we promote to public. Kept in lockstep with `RELEASE_SCRIPT_BASE` in
- * `src/index.ts` and `MODEL_ZIP_URL` in `scripts/install-model.{ps1,sh}`.
+ * Release-asset URL for the model zip (ONNX conversion by onnx-community, repackaged flat by
+ * `scripts/build-model-zip.py`). Kept in lockstep with `RELEASE_SCRIPT_BASE` and `VERSION`
+ * (tag `v<VERSION>`) in `src/index.ts` and `src/utils/config.ts`.
  */
-const MODEL_ZIP_URL =
-  "https://github.com/gregmos/PII-Shield/releases/download/v2.0.2/gliner-pii-base-v1.0.zip";
+const MODEL_ZIP_URL = "https://github.com/pierremndg/PII-Shield-FR/releases/download/v2.2.0-fr.1/gliner_multi_pii-v1.zip";
 
 /** Marker filename for the Tier-2 fallback in `findDownloadedGlinerZip`. */
 const MARKER_NAME = ".pii_shield_model_here";

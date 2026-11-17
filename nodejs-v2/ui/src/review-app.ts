@@ -26,6 +26,8 @@
 import { App, type McpUiHostContext } from "@modelcontextprotocol/ext-apps";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import "./review.css";
+import { REFERENTIEL_ETIQUETTES, REFERENTIEL_ALIAS } from "../../src/engine/fr-referentiel.js";
+import { normalizePhoneOrDate } from "../../src/engine/fr-normalize.js";
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -47,6 +49,10 @@ interface AddedEntity {
   type: string;
   start: number;
   end: number;
+  /** French fork: display marker (set by merges), never sent to the server. */
+  placeholder?: string;
+  /** French fork: token of a category change; additions with the same token form one label. */
+  fam?: string;
 }
 
 interface FormatRun {
@@ -76,7 +82,7 @@ interface SessionPayload {
   original_html?: string;
   anonymized_text?: string;
   entities?: Array<Omit<Entity, "idx" | "verified">>;
-  overrides?: { remove?: number[]; add?: AddedEntity[] };
+  overrides?: { remove?: number[]; add?: AddedEntity[]; merge?: Merge[] };
   approved?: boolean;
   source_filename?: string;
 }
@@ -109,7 +115,8 @@ interface Family {
   members: Array<{
     text: string;
     norm: string;
-    indices: number[];
+    /** Index in entities[] (number) or "a<k>" for the k-th manual addition. */
+    indices: Array<number | string>;
     score: number;
   }>;
 }
@@ -170,7 +177,7 @@ interface BulkSession {
   /** Cached original payload from the server. */
   payload: SessionPayload;
   /** Per-session user decisions. */
-  state: { removedIndices: Set<number>; addedEntities: AddedEntity[] };
+  state: { removedIndices: Set<number>; addedEntities: AddedEntity[]; merges: Merge[] };
 }
 
 let bulkSessions: BulkSession[] = [];
@@ -184,7 +191,7 @@ function isBulkMode(): boolean {
  * Set both the top and bottom Approve buttons to the same disabled/text
  * state. The bottom button is added by review.html so users can approve
  * after reviewing a long doc without scrolling back up — we keep their
- * states in sync so the UI always shows one coherent "Approve" / "Saving…"
+ * states in sync so the UI always shows one coherent "Valider" / "Saving…"
  * action everywhere.
  */
 function setApproveBtnState(disabled: boolean, text: string): void {
@@ -250,6 +257,14 @@ const ENTITY_GROUP: Record<string, string> = {
   CY_TIC: "ID_DOC", CY_ID_CARD: "ID_DOC",
   MEDICAL_LICENSE: "MEDICAL",
 };
+// French types and short names (placeholder labels): category from the single reference (src/engine/fr-referentiel.ts).
+for (const [, rows] of REFERENTIEL_ETIQUETTES) {
+  for (const [type, , , category] of rows) ENTITY_GROUP[type] = category;
+}
+for (const [tag, category] of REFERENTIEL_ALIAS) ENTITY_GROUP[tag] = category;
+for (const [, rows] of REFERENTIEL_ETIQUETTES) {
+  for (const [, , , category, tag] of rows) ENTITY_GROUP[tag] = category;
+}
 
 function getEntityClass(type: string): string {
   return "entity-" + (ENTITY_GROUP[type] || "OTHER");
@@ -262,6 +277,176 @@ function getTypeClass(type: string): string {
 function makeGroupKey(type: string, text: string): string {
   const norm = (text || "").trim().toLowerCase().replace(/[^a-z0-9]/g, "_");
   return `${type}__${norm}`;
+}
+
+// ── French fork: labels (one row per marker), merges, category changes ──────
+// A "label" is one marker (« Personne 1 ») and all the texts written under it. A reference to a detection is
+// either its index in entities[] (number) or "a<k>" for the k-th manual addition.
+
+type Ref = number | string;
+interface Merge { type: string; from: string; to: string }
+interface Entry { text: string; type: string; start: number; end: number; placeholder?: string; fam?: string; score?: number }
+
+/** Merges chosen by the reviewer: text `from` takes the label of `to` (same type). Sent with Approve. */
+let merges: Merge[] = [];
+/** Labels whose occurrences are unfolded in the sidebar (folded by default). */
+const openLabels = new Set<string>();
+/** Hover key of every detection (label key), and the detections of each label. Recomputed at each render. */
+let labelKeyByDoc: Record<string, string> = {};
+let labelIds: Record<string, Ref[]> = {};
+
+const TYPE_LABELS = new Map<string, string>();
+for (const [, rows] of REFERENTIEL_ETIQUETTES) for (const [type, label] of rows) TYPE_LABELS.set(type, label);
+function typeLabel(t: string): string { return TYPE_LABELS.get(t) || t; }
+
+const nums = (a: Ref[]): number[] => a.filter((x): x is number => typeof x === "number");
+const docKey = (j: Ref): string => (typeof j === "number" ? String(j) : "added_" + String(j).slice(1));
+
+/** Marker without brackets and without the document prefix, e.g. "<D1_PERSONNE_1a>" → "PERSONNE_1a". */
+function bareMarker(p?: string): string { return String(p || "").replace(/^<|>$/g, "").replace(/^D\d+_/, ""); }
+/** Number of a marker ("PERSONNE_4a" → "4"), "" for a merge key (F_…) or no marker. */
+function markerNumber(p?: string): string {
+  const s = bareMarker(p);
+  return s && !s.startsWith("F_") ? (s.split("_").pop() || "").replace(/[^0-9]/g, "") : "";
+}
+/** « Personne 1 »: label of the type and number of the marker. */
+function entityLabel(e: { type: string; placeholder?: string }): string {
+  const n = markerNumber(e.placeholder);
+  return n ? `${typeLabel(e.type)} ${n}` : typeLabel(e.type);
+}
+/** Hover/group key: type + marker when there is one, else type + text. */
+function groupKey(type: string, text: string, placeholder?: string): string {
+  return placeholder ? `${type}__${bareMarker(placeholder).replace(/[^a-zA-Z0-9]/g, "_")}` : makeGroupKey(type, text);
+}
+function entryOf(j: Ref): Entry | undefined {
+  return typeof j === "number" ? entities.find((x) => x.idx === j) : addedEntities[+String(j).slice(1)];
+}
+
+/** Merged texts share the marker of their target (display; the server numbers them the same way). */
+function applyMergesDisplay(): void {
+  const norm = (t: string) => String(t).trim().toLowerCase();
+  for (const f of merges) {
+    const all: Entry[] = [...entities.filter((a) => a.verified), ...addedEntities];
+    const target = all.find((x) => x.type === f.type && x.text === f.to);
+    const key = target && target.placeholder ? target.placeholder : "F_" + norm(f.to).replace(/[^a-z0-9]/g, "_");
+    for (const x of all) {
+      if (x.type === f.type && (norm(x.text) === norm(f.from) || norm(x.text) === norm(f.to))) x.placeholder = key;
+    }
+  }
+}
+
+/** An original that was re-typed: it is removed and an addition covers the same span; it must not hide the addition. */
+function originalReplaced(a: Entity): boolean {
+  return removedIndices.has(a.idx) && addedEntities.some((m) => m.start === a.start && m.end === a.end);
+}
+
+/** Marker used in the pseudonymized view for an entry (existing marker, or the next number of its tag for an addition). */
+function viewMarker(s: Entry): string {
+  if (s.placeholder && !bareMarker(s.placeholder).startsWith("F_")) return bareMarker(s.placeholder);
+  const all: Entry[] = [...entities, ...addedEntities];
+  const real = (x: Entry) => x.placeholder && !bareMarker(x.placeholder).startsWith("F_");
+  // Same key as the server (entity-dedup.ts normalize): phone numbers and dates written differently share one marker.
+  const key = (t: string): string =>
+    normalizePhoneOrDate(t) ?? t.toLowerCase().trim().replace(/[.,;:]+$/, "").replace(/\s+/g, " ");
+  const same = all.find((x) => real(x) && x.type === s.type && key(x.text) === key(s.text));
+  if (same) { s.placeholder = same.placeholder; return bareMarker(same.placeholder); }
+  const ofType = all.find((x) => real(x) && x.type === s.type);
+  const tag = ofType ? bareMarker(ofType.placeholder).split("_").slice(0, -1).join("_") : (TAG_NAMES_UI[s.type] || s.type);
+  let max = 0;
+  for (const x of all) {
+    const b = bareMarker(x.placeholder);
+    if (b.startsWith(tag + "_")) { const n = parseInt(b.split("_").pop() || "", 10); if (n > max) max = n; }
+  }
+  s.placeholder = `${tag}_${max + 1}`;
+  return s.placeholder;
+}
+const TAG_NAMES_UI: Record<string, string> = {};
+for (const [, rows] of REFERENTIEL_ETIQUETTES) for (const [type, , , , tag] of rows) TAG_NAMES_UI[type] = tag;
+
+interface LabelEntry extends Entry { idx: Ref }
+
+/** Group detections into labels: by marker when there is one, else by text similarity; re-typed ones form their own label. */
+function labelFamilies(): Family[] {
+  const originals: LabelEntry[] = entities.filter((e) => e.verified && !originalReplaced(e))
+    .map((e) => ({ text: e.text, type: e.type, start: e.start, end: e.end, placeholder: e.placeholder, score: e.score, idx: e.idx }));
+  const added: LabelEntry[] = addedEntities.map((x, k) => ({ ...x, score: 1, idx: "a" + k }));
+  const all = [...originals, ...added];
+  const families: Family[] = [];
+  const addTo = (fam: Family, x: LabelEntry) => {
+    const norm = x.text.trim().toLowerCase();
+    let m = fam.members.find((v) => v.norm === norm);
+    if (!m) { m = { text: x.text, norm, indices: [], score: x.score ?? 1 }; fam.members.push(m); }
+    m.indices.push(x.idx);
+  };
+  const newFam = (x: LabelEntry): Family => ({ type: x.type, rootText: x.text, rootNorm: x.text.trim().toLowerCase(), members: [] });
+  // 1. Re-typed (fam) entries: one label per change, grouped by exact text.
+  const byChange = new Map<string, Family>();
+  for (const x of all.filter((y) => y.fam)) {
+    let fam = byChange.get(x.fam as string);
+    if (!fam) { fam = newFam(x); byChange.set(x.fam as string, fam); families.push(fam); }
+    addTo(fam, x);
+  }
+  // 2. Entries with a marker: one label per marker (the variant letter is ignored).
+  const byMarker = new Map<string, Family>();
+  const free: LabelEntry[] = [];
+  for (const x of all.filter((y) => !y.fam)) {
+    if (!x.placeholder) { free.push(x); continue; }
+    const id = x.type + "|" + bareMarker(x.placeholder).replace(/(\d+)[a-z]$/, "$1");
+    let fam = byMarker.get(id);
+    if (!fam) { fam = newFam(x); byMarker.set(id, fam); families.push(fam); }
+    addTo(fam, x);
+  }
+  // 3. Entries without marker (manual additions): grouped by text similarity, like the original list.
+  for (const fam of buildFamilies(free as unknown as Entity[])) families.push(fam);
+
+  const pos = (j: Ref): number => { const e = entryOf(j); return e && typeof e.start === "number" ? e.start : 1e15; };
+  for (const f of families) {
+    for (const v of f.members) v.indices.sort((a, b) => pos(a) - pos(b));
+    f.members.sort((a, b) => pos(a.indices[0]) - pos(b.indices[0]));
+    f.rootText = f.members[0].text;
+    f.rootNorm = f.members[0].norm;
+  }
+  return families.sort((a, b) => pos(a.members[0].indices[0]) - pos(b.members[0].indices[0]));
+}
+
+/** The marker of a label: the smallest of its members, whatever their order (PERSONNE_4 before PERSONNE_4a). */
+function labelMarker(f: Family): string | undefined {
+  const ps: string[] = [];
+  for (const v of f.members) for (const j of v.indices) { const e = entryOf(j); if (e && e.placeholder) ps.push(String(e.placeholder)); }
+  ps.sort();
+  return ps.length ? ps[0] : undefined;
+}
+function labelKeyOf(f: Family): string { return groupKey(f.type, f.rootText, labelMarker(f)); }
+
+function computeLabelKeys(): void {
+  labelKeyByDoc = {};
+  labelIds = {};
+  for (const f of labelFamilies()) {
+    const k = labelKeyOf(f);
+    labelIds[k] = f.members.flatMap((v) => v.indices);
+    for (const v of f.members) for (const j of v.indices) labelKeyByDoc[docKey(j)] = k;
+  }
+}
+
+/** Change the category of detections. Originals are removed and re-added with the new type at the same place;
+ *  additions change type in place; already removed ones do not move. Returns the number of changes. */
+function changeCategory(ids: Ref[], type: string): number {
+  let n = 0;
+  const token = "c" + ids.map(String).join("_");
+  for (const x of ids) {
+    if (typeof x === "number") {
+      if (removedIndices.has(x)) continue;
+      const e = entities.find((y) => y.idx === x);
+      if (!e || e.type === type) continue;
+      removedIndices.add(x);
+      addedEntities.push({ text: e.text, type, start: e.start, end: e.end, fam: token });
+      n++;
+    } else {
+      const e = addedEntities[+String(x).slice(1)];
+      if (e && e.type !== type) { e.type = type; if (!e.fam) e.fam = token; n++; }
+    }
+  }
+  return n;
 }
 
 // ── Format parsing from docx HTML ───────────────────────────────────────────
@@ -319,10 +504,12 @@ interface DisplayEntity extends Entity {
 }
 
 function render(): void {
+  applyMergesDisplay();
+  computeLabelKeys();
   renderDocument();
   renderSidebar();
   updateStats();
-  if (splitView) renderAnonymizedPanel();
+  updateViews();
 }
 
 function renderDocument(): void {
@@ -331,7 +518,7 @@ function renderDocument(): void {
   container.classList.toggle("html-mode", hasHtml);
 
   const allEntities: DisplayEntity[] = [
-    ...entities.filter(e => e.verified).map<DisplayEntity>(e => ({ ...e, source: "original" })),
+    ...entities.filter(e => e.verified && !originalReplaced(e)).map<DisplayEntity>(e => ({ ...e, source: "original" })),
     ...addedEntities.map<DisplayEntity>((e, i) => ({
       text: e.text, type: e.type, start: e.start, end: e.end, score: 1.0,
       idx: (`added_${i}` as unknown) as number, verified: false, source: "added",
@@ -385,8 +572,8 @@ function buildSegments(allEntities: DisplayEntity[]): Segment[] {
 }
 
 function buildTooltipHtml(e: DisplayEntity): string {
-  const label = e.type.replace("_", " ");
-  return `<span class="entity-tooltip">${label}</span>`;
+  // « Personne 1 »: label of the reference and number of the marker, same as the sidebar and the menu.
+  return `<span class="entity-tooltip">${escapeHtml(entityLabel(e))}</span>`;
 }
 
 function renderSegmentsRange(segments: Segment[], rangeStart: number, rangeEnd: number): string {
@@ -413,10 +600,11 @@ function renderSegmentsRange(segments: Segment[], rangeStart: number, rangeEnd: 
         const isRemoved = ent.source === "original" && removedIndices.has(ent.idx as unknown as number);
         const isAdded = ent.source === "added";
         const cls = `entity ${getEntityClass(ent.type)} ${isRemoved ? "removed" : ""} ${isAdded ? "entity-added" : ""}`;
-        const groupKey = makeGroupKey(ent.type, ent.text);
         const dataIdx = String(ent.idx);
+        // Hover key = the label of the detection (same key in the text, the sidebar and the tooltip).
+        const hoverKey = labelKeyByDoc[dataIdx] || groupKey(ent.type, ent.text, ent.placeholder);
         html +=
-          `<span class="${cls}" data-idx="${dataIdx}" data-source="${ent.source}" data-group-key="${groupKey}">`;
+          `<span class="${cls}" data-idx="${dataIdx}" data-source="${ent.source}" data-group-key="${hoverKey}">`;
         currentEntity = seg.entity;
         currentEntity._tooltipHtml = buildTooltipHtml(ent);
       }
@@ -501,134 +689,72 @@ function buildFamilies(confirmed: Entity[]): Family[] {
 
 function renderSidebar(): void {
   const list = $("entity-list");
-  const confirmed = entities.filter(e => e.verified);
-  const families = buildFamilies(confirmed);
-  currentFamilies = families;
+  const fams = labelFamilies();
+  currentFamilies = fams;
 
-  // ── Filter pass: narrow families + addedEntities to the sidebar search text.
-  // Substring match (case-insensitive) on family root AND every variant text
-  // so typing "acme" finds "Acme LLC" family regardless of which variant is
-  // the root. Empty filter → show all. Update match-count footer for the
-  // user's awareness. See #filter-input + initSidebarFilter().
+  // Filter: substring (case-insensitive) on every text of a label. See #filter-input + initSidebarFilter().
   const filter = sidebarFilter;
-  const addedGroupsTotalKeys = new Set(addedEntities.map(e => makeGroupKey(e.type, e.text)));
-  const totalGroups = families.length + addedGroupsTotalKeys.size;
-
-  const filteredFamilies = filter === ""
-    ? families
-    : families.filter(fam => fam.members.some(m => m.text.toLowerCase().includes(filter)));
-  const filteredAddedEntities = filter === ""
-    ? addedEntities
-    : addedEntities.filter(e => e.text.toLowerCase().includes(filter));
-  const filteredAddedKeys = new Set(filteredAddedEntities.map(e => makeGroupKey(e.type, e.text)));
-  const visibleGroups = filteredFamilies.length + filteredAddedKeys.size;
-
+  const visible = filter === "" ? fams : fams.filter((f) => f.members.some((v) => v.text.toLowerCase().includes(filter)));
   const matchCountEl = document.getElementById("filter-match-count");
-  if (matchCountEl) {
-    matchCountEl.textContent = filter === ""
-      ? ""
-      : `${visibleGroups} of ${totalGroups}`;
-  }
+  if (matchCountEl) matchCountEl.textContent = filter === "" ? "" : `${visible.length} sur ${fams.length}`;
 
-  if (families.length === 0 && addedEntities.length === 0) {
+  if (fams.length === 0) {
     list.innerHTML =
-      '<div style="padding:24px 16px;text-align:center;color:var(--text-secondary);font-size:13px;">No PII entities detected in this document.</div>';
+      '<div style="padding:24px 16px;text-align:center;color:var(--text-secondary);font-size:13px;">Aucune entité PII détectée dans ce document.</div>';
     return;
   }
-  if (visibleGroups === 0) {
+  if (visible.length === 0) {
     list.innerHTML =
-      '<div style="padding:24px 16px;text-align:center;color:var(--text-secondary);font-size:13px;">No entities match the filter.</div>';
+      '<div style="padding:24px 16px;text-align:center;color:var(--text-secondary);font-size:13px;">Aucune entité ne correspond au filtre.</div>';
     return;
   }
 
+  const isNumber = (j: Ref) => typeof j === "number";
   let html = "";
-  for (const fam of filteredFamilies) {
-    const allIndices = fam.members.flatMap(m => m.indices);
-    const totalCount = allIndices.length;
-    const allRemoved = allIndices.every(i => removedIndices.has(i));
-    const hasVariants = fam.members.length > 1;
-    const familyKey = makeGroupKey(fam.type, fam.rootText);
-    const isCollapsed = collapsedFamilies.has(familyKey);
-    const root = fam.members[0];
-    const firstIdx = root.indices[0];
+  for (const f of visible) {
+    const ids = f.members.flatMap((v) => v.indices);
+    const total = ids.length;
+    const allRemoved = ids.every((j) => isNumber(j) && removedIndices.has(j as number));
+    const key = labelKeyOf(f);
+    const open = openLabels.has(key);
+    const first = f.members[0];
+    const marker = labelMarker(f);
+    const number = markerNumber(marker);
+    const title = number ? entityLabel({ type: f.type, placeholder: marker }) : first.text;
+    const idList = ids.map(String).join(",");
 
-    html += `<div class="entity-item ${getTypeClass(fam.type)} ${allRemoved ? "removed" : ""}" data-group-key="${familyKey}" data-action="scrollto" data-idx="${firstIdx}">`;
-    if (hasVariants) {
-      html += `<span class="family-toggle ${isCollapsed ? "collapsed" : ""}" data-action="toggle-family" data-family="${familyKey}">&#x25BC;</span>`;
-    }
-    // Abbreviate type label via ENTITY_GROUP (ORGANIZATION → ORG, EMAIL_ADDRESS
-    // → COMM, etc.) so the badge doesn't get truncated against the score +
-    // count + action-button chips. Fall back to raw type for unknown labels.
-    html += `<span class="type-badge">${ENTITY_GROUP[fam.type] || fam.type}</span>`;
-    // Native `title` attribute shows the full entity text on hover — needed
-    // because `.text` truncates via overflow:hidden+ellipsis for long names
-    // like "Thornbridge Capital Holdings Limited".
-    html += `<span class="text" title="${escapeHtml(root.text)}">${escapeHtml(root.text)}</span>`;
-    if (totalCount > 1) html += `<span class="group-count">&times;${totalCount}</span>`;
-    html += `<span class="score">${(root.score * 100).toFixed(0)}%</span>`;
-    if (hasVariants) {
-      const dataIndices = allIndices.join(",");
-      if (allRemoved) {
-        html += `<button class="action-btn restore-btn" title="Restore all" data-action="restore-family" data-indices="${dataIndices}">&#x21A9;</button>`;
-      } else {
-        html += `<button class="action-btn remove-btn" title="Remove all" data-action="remove-family" data-indices="${dataIndices}">&#x2715;</button>`;
-      }
-    } else {
-      if (allRemoved) {
-        html += `<button class="action-btn restore-btn" title="Restore" data-action="restore" data-idx="${firstIdx}">&#x21A9;</button>`;
-      } else {
-        html += `<button class="action-btn remove-btn" title="Remove" data-action="remove" data-idx="${firstIdx}">&#x2715;</button>`;
-      }
-    }
+    html += `<div class="entity-item ${getTypeClass(f.type)} ${allRemoved ? "removed" : ""}" data-group-key="${key}" title="Survol : toutes les occurrences. Sur une occurrence dépliée : celle-ci seulement">`;
+    html += `<span class="family-toggle ${open ? "" : "collapsed"}" data-action="occ-toggle" data-family="${key}">&#x25BC;</span>`;
+    if (!number) html += `<span class="type-badge">${escapeHtml(typeLabel(f.type))}</span>`;
+    if (!isNumber(first.indices[0])) html += `<span class="idx">+</span>`;
+    html += number
+      ? `<span class="text" title="${escapeHtml(first.text)}"><span class="type-badge">${escapeHtml(title)}</span></span>`
+      : `<span class="text" title="${escapeHtml(first.text)}">${escapeHtml(title)}</span>`;
+    html += `<span class="group-count">&times;${total}</span>`;
+    html += `<button class="action-btn add-btn" title="Ajouter un texte à cette étiquette" data-action="add-pending" data-type="${f.type}" data-text="${escapeHtml(first.text)}">+</button>`;
+    html += `<button class="action-btn merge-btn" title="Fusionner avec une étiquette existante" data-action="merge-group" data-key="${key}">&#x21C4;</button>`;
+    html += `<button class="action-btn cat-btn" title="Changer la catégorie de l’étiquette" data-action="cat-change" data-indices="${idList}">&#x270E;</button>`;
+    html += allRemoved
+      ? `<button class="action-btn restore-btn" title="Rétablir tout" data-action="grp-restore" data-indices="${idList}">&#x21A9;</button>`
+      : `<button class="action-btn remove-btn" title="Retirer tout" data-action="grp-remove" data-indices="${idList}">&#x2715;</button>`;
     html += `</div>`;
 
-    if (hasVariants && !isCollapsed) {
-      for (let i = 1; i < fam.members.length; i++) {
-        const m = fam.members[i];
-        const variantKey = makeGroupKey(fam.type, m.text);
-        const varRemoved = m.indices.every(idx => removedIndices.has(idx));
-        const varFirstIdx = m.indices[0];
-        html += `<div class="entity-item variant ${getTypeClass(fam.type)} ${varRemoved ? "removed" : ""}" data-group-key="${variantKey}" data-action="scrollto" data-idx="${varFirstIdx}">`;
-        html += `<span class="type-badge" style="font-size:9px">${String.fromCharCode(96 + i)}</span>`;
-        // tooltip on hover — shows full variant text when truncated by ellipsis
-        html += `<span class="text" title="${escapeHtml(m.text)}">${escapeHtml(m.text)}</span>`;
-        if (m.indices.length > 1) html += `<span class="group-count">&times;${m.indices.length}</span>`;
-        html += `<span class="score">${(m.score * 100).toFixed(0)}%</span>`;
-        if (varRemoved) {
-          html += `<button class="action-btn restore-btn" title="Restore" data-action="restore" data-idx="${varFirstIdx}">&#x21A9;</button>`;
-        } else {
-          html += `<button class="action-btn remove-btn" title="Remove" data-action="remove" data-idx="${varFirstIdx}">&#x2715;</button>`;
+    if (open) {
+      for (const v of f.members) {
+        for (const j of v.indices) {
+          const removedOcc = isNumber(j) && removedIndices.has(j as number);
+          const target = isNumber(j) ? ` data-action="scrollto" data-idx="${j}"` : "";
+          html += `<div class="entity-item variant ${getTypeClass(f.type)} ${removedOcc ? "removed" : ""}" data-occ="${docKey(j)}"${target}>`;
+          if (!isNumber(j)) html += `<span class="idx">+</span>`;
+          html += `<span class="text" title="${escapeHtml(v.text)}">${escapeHtml(v.text)}</span>`;
+          if (isNumber(j)) html += `<span class="score">${(v.score * 100).toFixed(0)}%</span>`;
+          html += removedOcc
+            ? `<button class="action-btn restore-btn" title="Rétablir" data-action="grp-restore" data-indices="${j}">&#x21A9;</button>`
+            : `<button class="action-btn remove-btn" title="Retirer" data-action="grp-remove" data-indices="${j}">&#x2715;</button>`;
+          html += `<button class="action-btn cat-btn" title="Changer la catégorie de cette occurrence" data-action="cat-change" data-indices="${j}">&#x270E;</button>`;
+          html += `</div>`;
         }
-        html += `</div>`;
       }
-    }
-  }
-
-  if (filteredAddedEntities.length > 0) {
-    // Group by (type, text) key. Use filteredAddedEntities (pre-filtered by
-    // sidebarFilter) but indices still point into original addedEntities
-    // array so click handlers / remove-added-group resolve correctly.
-    const addedGroups = new Map<string, { type: string; text: string; indices: number[] }>();
-    for (let i = 0; i < addedEntities.length; i++) {
-      const e = addedEntities[i];
-      if (filter !== "" && !e.text.toLowerCase().includes(filter)) continue;
-      const key = makeGroupKey(e.type, e.text);
-      if (!addedGroups.has(key)) {
-        addedGroups.set(key, { type: e.type, text: e.text, indices: [i] });
-      } else {
-        addedGroups.get(key)!.indices.push(i);
-      }
-    }
-    html += `<div class="sidebar-header" style="margin-top:8px;padding:8px 12px">Added by you</div>`;
-    for (const [key, group] of addedGroups) {
-      const count = group.indices.length;
-      html += `<div class="entity-item ${getTypeClass(group.type)}">`;
-      html += `<span class="idx">+</span>`;
-      html += `<span class="type-badge">${ENTITY_GROUP[group.type] || group.type}</span>`;
-      html += `<span class="text" title="${escapeHtml(group.text)}">${escapeHtml(group.text)}</span>`;
-      if (count > 1) html += `<span class="group-count">&times;${count}</span>`;
-      html += `<button class="action-btn remove-btn" title="Remove all" data-action="remove-added-group" data-key="${key}">&#x2715;</button>`;
-      html += `</div>`;
     }
   }
 
@@ -636,53 +762,212 @@ function renderSidebar(): void {
   wireSidebarHandlers();
 }
 
+/** "12,a3" → [12, "a3"] */
+function parseIds(s: string): Ref[] {
+  return s.split(",").filter(Boolean).map((v) => (v.charAt(0) === "a" ? v : Number(v)));
+}
+
 function wireSidebarHandlers(): void {
   const list = $("entity-list");
 
   for (const el of Array.from(list.querySelectorAll<HTMLElement>(".entity-item"))) {
-    const groupKey = el.dataset.groupKey || "";
-    if (groupKey) {
-      el.addEventListener("mouseenter", () => highlightGroup(groupKey));
-      el.addEventListener("mouseleave", () => unhighlightGroup(groupKey));
+    const key = el.dataset.groupKey || "";
+    if (key) {
+      el.addEventListener("mouseenter", () => highlightGroup(key));
+      el.addEventListener("mouseleave", () => unhighlightGroup(key));
+    }
+    const occ = el.dataset.occ;
+    if (occ) {
+      el.addEventListener("mouseenter", () => highlightOccurrence(occ));
+      el.addEventListener("mouseleave", () => highlightOccurrence(null));
     }
     if (el.dataset.action === "scrollto" && el.dataset.idx) {
       const idx = Number(el.dataset.idx);
       el.addEventListener("click", (ev) => {
-        if ((ev.target as HTMLElement).closest("button,[data-action=toggle-family]")) return;
+        if ((ev.target as HTMLElement).closest("button")) return;
         scrollToEntity(idx);
       });
     }
   }
 
-  for (const btn of Array.from(list.querySelectorAll<HTMLElement>("[data-action=toggle-family]"))) {
+  for (const btn of Array.from(list.querySelectorAll<HTMLElement>("[data-action=occ-toggle]"))) {
     btn.addEventListener("click", (ev) => {
       ev.stopPropagation();
-      toggleFamily(btn.dataset.family || "");
+      const key = btn.dataset.family || "";
+      if (openLabels.has(key)) openLabels.delete(key); else openLabels.add(key);
+      renderSidebar();
     });
   }
-  for (const btn of Array.from(list.querySelectorAll<HTMLElement>("[data-action=remove]"))) {
-    btn.addEventListener("click", (ev) => { ev.stopPropagation(); removeEntity(Number(btn.dataset.idx)); });
-  }
-  for (const btn of Array.from(list.querySelectorAll<HTMLElement>("[data-action=restore]"))) {
-    btn.addEventListener("click", (ev) => { ev.stopPropagation(); restoreEntity(Number(btn.dataset.idx)); });
-  }
-  for (const btn of Array.from(list.querySelectorAll<HTMLElement>("[data-action=remove-family]"))) {
+  for (const btn of Array.from(list.querySelectorAll<HTMLElement>("[data-action=grp-remove],[data-action=grp-restore]"))) {
     btn.addEventListener("click", (ev) => {
       ev.stopPropagation();
-      const indices = (btn.dataset.indices || "").split(",").map(Number).filter(n => !Number.isNaN(n));
-      removeFamilyAll(indices);
+      const restore = btn.dataset.action === "grp-restore";
+      const dropAdded = new Set<number>();
+      for (const j of parseIds(btn.dataset.indices || "")) {
+        if (typeof j === "string") { if (!restore) dropAdded.add(+j.slice(1)); }
+        else if (restore) removedIndices.delete(j);
+        else removedIndices.add(j);
+      }
+      if (dropAdded.size > 0) addedEntities = addedEntities.filter((_, k) => !dropAdded.has(k));
+      showToast(restore ? "Rétabli" : "Retiré", "restore");
+      render();
     });
   }
-  for (const btn of Array.from(list.querySelectorAll<HTMLElement>("[data-action=restore-family]"))) {
+  for (const btn of Array.from(list.querySelectorAll<HTMLElement>("[data-action=add-pending]"))) {
     btn.addEventListener("click", (ev) => {
       ev.stopPropagation();
-      const indices = (btn.dataset.indices || "").split(",").map(Number).filter(n => !Number.isNaN(n));
-      restoreFamilyAll(indices);
+      pendingAddTarget = { type: btn.dataset.type || "PERSON", text: btn.dataset.text || "" };
+      document.body.classList.add("mode-ajout");
+      showToast(`Sélectionnez le texte à ajouter à « ${pendingAddTarget.text} » (Échap pour annuler)`, "restore");
     });
   }
-  for (const btn of Array.from(list.querySelectorAll<HTMLElement>("[data-action=remove-added-group]"))) {
-    btn.addEventListener("click", (ev) => { ev.stopPropagation(); removeAddedGroup(btn.dataset.key || ""); });
+  for (const btn of Array.from(list.querySelectorAll<HTMLElement>("[data-action=merge-group]"))) {
+    btn.addEventListener("click", (ev) => { ev.stopPropagation(); openMergeList(btn, btn.dataset.key || ""); });
   }
+  for (const btn of Array.from(list.querySelectorAll<HTMLElement>("[data-action=cat-change]"))) {
+    btn.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      const r = btn.getBoundingClientRect();
+      openCategoryMenu(parseIds(btn.dataset.indices || ""), r.left - 160, r.bottom + 4);
+    });
+  }
+}
+
+// ── French fork: add to a label, merge, change category ─────────────────────
+
+/** "+" on a label: the next selection is added under that label. */
+let pendingAddTarget: { type: string; text: string } | null = null;
+
+/** Highlight one occurrence only (sidebar row and text span). */
+let highlightedOccurrence: string | null = null;
+function highlightOccurrence(k: string | null): void {
+  if (highlightedOccurrence !== null) {
+    document.querySelectorAll(`[data-occ="${highlightedOccurrence}"],.entity[data-idx="${highlightedOccurrence}"]`).forEach((x) => x.classList.remove("group-hover"));
+  }
+  highlightedOccurrence = k;
+  if (k !== null) document.querySelectorAll(`[data-occ="${k}"],.entity[data-idx="${k}"]`).forEach((x) => x.classList.add("group-hover"));
+}
+
+/** Side box shown at a fixed position (merge list, category menu). */
+function sideBox(id: string): HTMLElement {
+  let box = document.getElementById(id);
+  if (!box) {
+    box = document.createElement("div");
+    box.id = id;
+    box.className = "type-dropdown";
+    document.body.appendChild(box);
+  }
+  return box;
+}
+function placeBox(box: HTMLElement, x: number, y: number): void {
+  box.style.position = "fixed";
+  box.style.bottom = "auto";
+  box.style.right = "auto";
+  box.style.zIndex = "300";
+  box.style.maxHeight = "60vh";
+  box.style.overflowY = "auto";
+  box.style.left = Math.max(8, Math.min(x, window.innerWidth - 280)) + "px";
+  box.style.top = Math.max(8, Math.min(y, window.innerHeight - 200)) + "px";
+  box.classList.add("visible");
+}
+
+/** "⇄": list the other labels of the same type; choosing one merges this label's texts into it. */
+function openMergeList(btn: HTMLElement, key: string): void {
+  const source = labelFamilies().find((f) => labelKeyOf(f) === key);
+  if (!source) return;
+  const targets = labelFamilies().filter((f) => f.type === source.type && labelKeyOf(f) !== key);
+  const box = sideBox("fusion-side");
+  box.innerHTML = targets.length === 0
+    ? `<div class="type-dropdown-item">Aucune autre étiquette de ce type</div>`
+    : targets.map((t, i) => `<div class="type-dropdown-item" data-idx="${i}">${escapeHtml(typeLabel(t.type) + " : " + t.rootText)}</div>`).join("");
+  box.onclick = (ev) => {
+    const it = (ev.target as HTMLElement).closest<HTMLElement>(".type-dropdown-item[data-idx]");
+    if (!it) return;
+    box.classList.remove("visible");
+    const target = targets[+(it.dataset.idx || "0")];
+    if (!target) return;
+    for (const m of source.members) {
+      if (m.text.trim().toLowerCase() !== target.rootText.trim().toLowerCase()) merges.push({ type: source.type, from: m.text, to: target.rootText });
+    }
+    showToast(`Fusion : ${source.rootText} → ${target.rootText}`, "restore");
+    render();
+  };
+  const r = btn.getBoundingClientRect();
+  placeBox(box, r.left, r.bottom + 4);
+}
+
+/** Menu of all categories (folded by default) to change the category of detections. */
+function openCategoryMenu(ids: Ref[], x: number, y: number): void {
+  const box = sideBox("cat-side");
+  box.innerHTML = "";
+  for (const [groupName, rows] of REFERENTIEL_ETIQUETTES) {
+    const header = document.createElement("div");
+    header.className = "type-dropdown-group collapsed";
+    header.textContent = groupName;
+    header.style.color = `var(${rows[0][2]})`;
+    box.appendChild(header);
+    for (const [type, label, cssVar] of rows) {
+      const item = document.createElement("div");
+      item.className = "type-dropdown-item";
+      item.dataset.type = type;
+      item.style.display = "none";
+      item.appendChild(typeBadge(label, cssVar));
+      box.appendChild(item);
+    }
+  }
+  box.onclick = (ev) => {
+    const target = ev.target as HTMLElement;
+    const h = target.closest<HTMLElement>(".type-dropdown-group");
+    if (h) { ev.stopPropagation(); foldGroup(h); return; }
+    const it = target.closest<HTMLElement>(".type-dropdown-item[data-type]");
+    if (!it) return;
+    ev.stopPropagation();
+    box.classList.remove("visible");
+    const type = it.dataset.type || "";
+    if (changeCategory(ids, type) > 0) showToast("Catégorie changée : " + typeLabel(type), "restore");
+    render();
+  };
+  placeBox(box, x, y);
+}
+
+/** Colored pill for a type (same colours as the category). */
+function typeBadge(label: string, cssVar: string): HTMLElement {
+  const b = document.createElement("span");
+  b.className = "type-badge";
+  b.style.background = `var(${cssVar}-bg)`;
+  b.style.color = `var(${cssVar})`;
+  b.textContent = label;
+  return b;
+}
+
+/** Fold or unfold a group header and its items in a menu. */
+function foldGroup(h: HTMLElement): void {
+  const folded = !h.classList.contains("collapsed");
+  h.classList.toggle("collapsed", folded);
+  let n = h.nextElementSibling as HTMLElement | null;
+  while (n && !n.classList.contains("type-dropdown-group")) {
+    n.style.display = folded ? "none" : "";
+    n = n.nextElementSibling as HTMLElement | null;
+  }
+}
+
+/** Open the type menu below the toolbar when the toolbar is high in the window (else it goes off screen). */
+function placeMenu(id: string): void {
+  const tb = document.getElementById("selection-toolbar");
+  const dd = document.getElementById(id);
+  if (tb && dd) dd.classList.toggle("down", tb.getBoundingClientRect().top < 330);
+}
+
+/** References of the label under the current selection when it is exactly a detection (the menu then changes its category). */
+let changeTargetIds: Ref[] | null = null;
+function selectionLabelIds(): Ref[] | null {
+  if (!pendingSelection) return null;
+  const sel = pendingSelection;
+  const e = entities.find((x) => x.verified && !removedIndices.has(x.idx) && x.start === sel.start && x.end === sel.end);
+  if (e) { const k = labelKeyByDoc[String(e.idx)]; return k ? labelIds[k] : [e.idx]; }
+  const i = addedEntities.findIndex((x) => x.start === sel.start && x.end === sel.end);
+  if (i >= 0) { const k = labelKeyByDoc["added_" + i]; return k ? labelIds[k] : ["a" + i]; }
+  return null;
 }
 
 function toggleFamily(familyKey: string): void {
@@ -701,12 +986,16 @@ function updateStats(): void {
 // ── Remove / restore ────────────────────────────────────────────────────────
 
 function toggleEntity(el: HTMLElement): void {
+  // A click on a mention in the text removes that one mention only (the sidebar removes a whole label).
+  const sl = window.getSelection();
+  if (sl && !sl.isCollapsed && sl.toString().trim()) return; // selecting text must not remove the mark under it
   const source = el.dataset.source;
   const idxStr = el.dataset.idx || "";
   if (source === "original") {
     const numIdx = parseInt(idxStr);
-    if (removedIndices.has(numIdx)) restoreEntity(numIdx);
-    else removeEntity(numIdx);
+    if (removedIndices.has(numIdx)) removedIndices.delete(numIdx);
+    else removedIndices.add(numIdx);
+    render();
   } else if (source === "added") {
     removeAdded(parseInt(idxStr.replace("added_", "")));
   }
@@ -780,12 +1069,27 @@ function restoreFamilyAll(indices: number[]): void {
   render();
 }
 
+// Reset in two clicks: the browser confirm() dialog is silently blocked by the host window.
+let resetAskedAt = 0;
 function resetAll(): void {
-  if (removedIndices.size === 0 && addedEntities.length === 0) return;
-  if (!confirm("Reset all changes? This will restore all removed entities and discard added ones.")) return;
+  if (removedIndices.size === 0 && addedEntities.length === 0 && merges.length === 0) { showToast("Rien à réinitialiser", "restore"); return; }
+  const btn = $("reset-btn");
+  if (Date.now() - resetAskedAt > 4000) {
+    resetAskedAt = Date.now();
+    btn.textContent = "Cliquer à nouveau pour confirmer";
+    btn.style.color = "var(--financial)";
+    window.setTimeout(() => {
+      if (Date.now() - resetAskedAt >= 4000) { btn.textContent = "Réinitialiser"; btn.style.color = ""; }
+    }, 4100);
+    return;
+  }
+  resetAskedAt = 0;
+  btn.textContent = "Réinitialiser";
+  btn.style.color = "";
   removedIndices.clear();
   addedEntities = [];
-  showToast("All changes reset", "restore");
+  merges = [];
+  showToast("Modifications réinitialisées", "restore");
   render();
 }
 
@@ -841,6 +1145,18 @@ function showToolbarForSelection(e: MouseEvent): void {
   if (start === -1) { toolbar.classList.remove("visible"); return; }
   pendingSelection = { text, start, end: start + text.length };
 
+  // "+" on a label was clicked: the selection joins that label (same type, merged) without opening the menu.
+  if (pendingAddTarget) {
+    const target = pendingAddTarget;
+    pendingAddTarget = null;
+    document.body.classList.remove("mode-ajout");
+    toolbar.classList.remove("visible");
+    if (text.trim().toLowerCase() !== target.text.trim().toLowerCase()) merges.push({ type: target.type, from: text, to: target.text });
+    addEntity(target.type);
+    showToast(`Ajouté à « ${target.text} »`, "restore");
+    return;
+  }
+
   const rect = range.getBoundingClientRect();
   const toolbarW = 260;
   let left = rect.left + rect.width / 2 - toolbarW / 2;
@@ -851,6 +1167,14 @@ function showToolbarForSelection(e: MouseEvent): void {
   toolbar.style.top = `${top}px`;
   toolbar.classList.add("visible");
   toolbarShownAt = Date.now();
+
+  // The full menu opens at once. If the selection is exactly a detection, choosing a type changes its category.
+  changeTargetIds = selectionLabelIds();
+  const menu = $("type-dropdown");
+  menu.classList.toggle("mode-change", changeTargetIds !== null);
+  menu.dataset.titre = "Changer la catégorie de cette étiquette";
+  menu.classList.add("visible");
+  placeMenu("type-dropdown");
 }
 
 function findTextPositionFromRange(range: Range, container: HTMLElement, selectedText: string): number {
@@ -879,7 +1203,18 @@ function findTextPositionFromRange(range: Range, container: HTMLElement, selecte
 }
 
 function addEntity(type: string): void {
-  ($("type-dropdown")).classList.remove("visible");
+  ($("type-dropdown")).classList.remove("visible", "mode-change");
+  // Selection is exactly an existing detection: change the category of its label instead of adding.
+  if (changeTargetIds) {
+    const ids = changeTargetIds;
+    changeTargetIds = null;
+    $("selection-toolbar").classList.remove("visible");
+    pendingSelection = null;
+    window.getSelection()?.removeAllRanges();
+    if (changeCategory(ids, type) > 0) showToast("Catégorie changée : " + typeLabel(type), "restore");
+    render();
+    return;
+  }
   if (!pendingSelection) return;
   const searchText = pendingSelection.text;
   const newLen = searchText.length;
@@ -937,6 +1272,7 @@ async function approve(): Promise<void> {
             start: e.start,
             end: e.end,
           })),
+          merge: s.state.merges || [],
         };
         // v2.1.3: include doc_id so the server can route overrides to the
         // correct PerDocReview inside a multi-file session. For legacy
@@ -956,18 +1292,18 @@ async function approve(): Promise<void> {
       if (allApproved) {
         $("approved-overlay").classList.add("visible");
       } else {
-        setApproveBtnState(false, "Approve");
+        setApproveBtnState(false, "Valider");
         showToast(
-          `Approved "${bulkSessions[currentBulkIdx].source_filename}" \u2014 continuing to next document`,
+          `Validé "${bulkSessions[currentBulkIdx].source_filename}" \u2014 passage au document suivant`,
           "restore",
         );
         setTimeout(() => bulkAdvanceToNext(), 400);
       }
     } catch (err) {
-      setApproveBtnState(false, "Approve");
+      setApproveBtnState(false, "Valider");
       bulkSessions[currentBulkIdx].approved = false;
       renderDocTabs();
-      showToast("Failed to save: " + (err instanceof Error ? err.message : String(err)), "remove");
+      showToast("Échec de l'enregistrement : " + (err instanceof Error ? err.message : String(err)), "remove");
     }
     return;
   }
@@ -976,6 +1312,7 @@ async function approve(): Promise<void> {
   const overrides = {
     remove: Array.from(removedIndices),
     add: addedEntities.map(e => ({ text: e.text, type: e.type, start: e.start, end: e.end })),
+    merge: merges,
   };
 
   try {
@@ -992,8 +1329,8 @@ async function approve(): Promise<void> {
     });
     $("approved-overlay").classList.add("visible");
   } catch (err) {
-    setApproveBtnState(false, "Approve");
-    showToast("Failed to save: " + (err instanceof Error ? err.message : String(err)), "remove");
+    setApproveBtnState(false, "Valider");
+    showToast("Échec de l'enregistrement : " + (err instanceof Error ? err.message : String(err)), "remove");
   }
 }
 
@@ -1018,63 +1355,61 @@ function scrollToEntity(idx: number): void {
   window.setTimeout(() => el.classList.remove("flash-highlight"), 1300);
 }
 
-function toggleSplitView(): void {
-  splitView = !splitView;
+// French fork: two buttons, « Original » and « Pseudonymisé ». Both on = side by side; one = that view alone.
+let showOriginal = true;
+let showPseudonymized = true;
+let scrollLinked = false;
+
+function toggleView(which: "o" | "a"): void {
+  if (which === "o") showOriginal = !showOriginal; else showPseudonymized = !showPseudonymized;
+  if (!showOriginal && !showPseudonymized) { if (which === "o") showOriginal = true; else showPseudonymized = true; }
+  updateViews();
+}
+
+function updateViews(): void {
   const main = $("main-container");
-  const btn = $("split-btn");
+  splitView = showOriginal && showPseudonymized;
   main.classList.toggle("split-view", splitView);
-  btn.classList.toggle("active", splitView);
-  if (splitView) { renderAnonymizedPanel(); setupScrollSync(); }
+  main.classList.toggle("only-anon", showPseudonymized && !showOriginal);
+  $("btn-vue-orig").classList.toggle("active", showOriginal);
+  $("btn-vue-anon").classList.toggle("active", showPseudonymized);
+  if (showPseudonymized) renderAnonymizedPanel();
+  if (splitView && !scrollLinked) { scrollLinked = true; setupScrollSync(); }
 }
 
 const PH_GROUP = ENTITY_GROUP;
 
 function renderAnonymizedPanel(): void {
   const container = $("doc-content-anon");
-  if (!anonymizedText) { container.textContent = "Anonymized text not available."; return; }
+  if (!anonymizedText) { container.textContent = "Texte anonymisé indisponible."; return; }
   const hasHtml = formatRuns.length > 0 || blockMap.length > 0;
   container.classList.toggle("html-mode", hasHtml);
 
-  const paragraphs = anonymizedText.split("\n");
+  // French fork: the pseudonymized column is rebuilt from the original text and the current state of the panel
+  // (removed detections stay in clear, additions and merges are replaced by their marker), so it follows every edit.
+  const views: Entry[] = [
+    ...entities.filter((s) => s.verified && !removedIndices.has(s.idx)),
+    ...addedEntities,
+  ].filter((s) => s.start >= 0 && s.end > s.start).sort((a, b) => a.start - b.start);
+
   let html = "";
-  for (let pi = 0; pi < paragraphs.length; pi++) {
-    const para = paragraphs[pi];
-    const tag = (hasHtml && blockMap[pi] && blockMap[pi].tag) || "p";
-    html += `<${tag}>` + escapeHtml(para).replace(/&lt;(\w+?)&gt;/g, (_m, phTag: string) => {
-      const stripped = phTag.replace(/^D\d+_/, "");
-      const baseType = stripped.replace(/_\d+\w*$/, "");
-      const group = PH_GROUP[baseType] || "OTHER";
-      return `<span class="anon-placeholder ph-${group}">&lt;${phTag}&gt;</span>`;
-    }) + `</${tag}>`;
+  let pos = 0;
+  for (const s of views) {
+    if (s.start < pos) continue;
+    const label = viewMarker(s);
+    const isAdded = (addedEntities as Entry[]).includes(s);
+    html += escapeHtml(originalText.slice(pos, s.start))
+      + `<span class="anon-placeholder ph-${PH_GROUP[s.type] || "OTHER"}${isAdded ? " ph-added" : ""}">&lt;${escapeHtml(label)}&gt;</span>`;
+    pos = s.end;
   }
-
-  for (const e of entities) {
-    if (!removedIndices.has(e.idx)) continue;
-    if (!e.placeholder) continue;
-    const escapedPh = `&lt;${escapeHtml(e.placeholder)}&gt;`;
-    const phRegex = new RegExp(
-      `<span class="anon-placeholder[^"]*">${escapedPh.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}</span>`,
-      "g",
-    );
-    html = html.replace(phRegex, `<span class="anon-restored">${escapeHtml(e.text)}</span>`);
+  html += escapeHtml(originalText.slice(pos));
+  const lines = html.split("\n");
+  let out = "";
+  for (let i = 0; i < lines.length; i++) {
+    const tag = (hasHtml && blockMap[i] && blockMap[i].tag) || "p";
+    out += `<${tag}>${lines[i]}</${tag}>`;
   }
-
-  if (addedEntities.length > 0) {
-    for (const ae of addedEntities) {
-      const escaped = escapeHtml(ae.text);
-      if (!escaped) continue;
-      const group = PH_GROUP[ae.type] || "OTHER";
-      const placeholder =
-        `<span class="anon-placeholder ph-${group} ph-added">&lt;${ae.type}&gt;</span>`;
-      const safeText = escaped.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      html = html.replace(
-        new RegExp("(?<=>)([^<]*?)(" + safeText + ")", "g"),
-        (_m, before) => before + placeholder,
-      );
-    }
-  }
-
-  container.innerHTML = html;
+  container.innerHTML = out;
 }
 
 function setupScrollSync(): void {
@@ -1111,7 +1446,7 @@ function focusFamily(idx: number): void {
   }
   document.querySelectorAll(`.entity[data-group-key="${CSS.escape(groupKey)}"]`).forEach(el => el.classList.add("focused"));
   const firstIdx = fam.members[0].indices[0];
-  scrollToEntity(firstIdx);
+  if (typeof firstIdx === "number") scrollToEntity(firstIdx);
 }
 
 function getFocusedFamily(): Family | null {
@@ -1152,7 +1487,7 @@ document.addEventListener("keydown", (e) => {
   if (key === "d" || key === "D") {
     const fam = getFocusedFamily();
     if (!fam) return;
-    const allIndices = fam.members.flatMap(m => m.indices);
+    const allIndices = nums(fam.members.flatMap(m => m.indices));
     if (!allIndices.every(i => removedIndices.has(i))) {
       removeFamilyAll(allIndices);
       setTimeout(() => focusFamily(focusedFamilyIdx), 50);
@@ -1162,7 +1497,7 @@ document.addEventListener("keydown", (e) => {
   if (key === "r" || key === "R") {
     const fam = getFocusedFamily();
     if (!fam) return;
-    const allIndices = fam.members.flatMap(m => m.indices);
+    const allIndices = nums(fam.members.flatMap(m => m.indices));
     if (allIndices.some(i => removedIndices.has(i))) {
       restoreFamilyAll(allIndices);
       setTimeout(() => focusFamily(focusedFamilyIdx), 50);
@@ -1207,6 +1542,7 @@ function initBulk(sessions: SessionPayload[]): void {
     approved: !!s.approved,
     payload: s,
     state: {
+      merges: (s.overrides?.merge || []).slice(),
       removedIndices: new Set<number>((s.overrides?.remove as number[]) || []),
       addedEntities: ((s.overrides?.add || []) as AddedEntity[]).filter(
         (a) => a.start >= 0 && a.text,
@@ -1260,6 +1596,7 @@ function saveCurrentBulkState(): void {
   s.state = {
     removedIndices: new Set(removedIndices),
     addedEntities: addedEntities.slice(),
+    merges: merges.slice(),
   };
 }
 
@@ -1279,6 +1616,7 @@ function loadBulkDocument(idx: number): void {
   loadSession(s.payload);
   removedIndices = new Set(s.state.removedIndices);
   addedEntities = s.state.addedEntities.slice();
+  merges = s.state.merges ? s.state.merges.slice() : merges;
   render();
   renderDocTabs();
 }
@@ -1393,12 +1731,13 @@ function loadSession(payload: SessionPayload): void {
   }));
   removedIndices = new Set((payload.overrides?.remove as number[]) || []);
   addedEntities = (payload.overrides?.add || []).filter(a => a.start >= 0 && a.text) as AddedEntity[];
+  merges = (payload.overrides?.merge || []).slice();
   formatRuns = [];
   blockMap = [];
   if (originalHtml) parseHtmlFormatting(originalHtml);
 
-  const splitBtn = $("split-btn");
-  splitBtn.style.display = anonymizedText ? "" : "none";
+  $("btn-vue-anon").style.display = anonymizedText ? "" : "none";
+  $("btn-vue-orig").style.display = anonymizedText ? "" : "none";
 
   if (payload.approved) {
     $("approved-overlay").classList.add("visible");
@@ -1498,7 +1837,8 @@ function initSidebarFilter(): void {
 
 function wireStaticHandlers(): void {
   $("theme-btn").addEventListener("click", toggleTheme);
-  $("split-btn").addEventListener("click", toggleSplitView);
+  $("btn-vue-orig").addEventListener("click", () => toggleView("o"));
+  $("btn-vue-anon").addEventListener("click", () => toggleView("a"));
   $("reset-btn").addEventListener("click", resetAll);
   $("approve-btn").addEventListener("click", () => { approve(); });
   // Bottom action bar — duplicates top Approve + offers "↑ To top" which
@@ -1519,6 +1859,54 @@ function wireStaticHandlers(): void {
   for (const btn of Array.from(document.querySelectorAll<HTMLElement>(".selection-toolbar .type-btn[data-type]"))) {
     btn.addEventListener("click", () => addEntity(btn.dataset.type || "PERSON"));
   }
+  // The "more types" menu is built from the single reference of types (French groups and labels).
+  const dropdown = $("type-dropdown");
+  dropdown.textContent = "";
+  for (const [groupName, rows] of REFERENTIEL_ETIQUETTES) {
+    const header = document.createElement("div");
+    header.className = "type-dropdown-group";
+    header.textContent = groupName;
+    dropdown.appendChild(header);
+    for (const [type, label, cssVar] of rows) {
+      const item = document.createElement("div");
+      item.className = "type-dropdown-item";
+      item.dataset.type = type;
+      item.appendChild(typeBadge(label, cssVar));
+      dropdown.appendChild(item);
+    }
+    header.style.color = `var(${rows[0][2]})`;
+  }
+  // Groups fold and unfold on click; all folded at start.
+  dropdown.addEventListener("click", (ev) => {
+    const h = (ev.target as HTMLElement).closest<HTMLElement>(".type-dropdown-group");
+    if (h) { ev.stopPropagation(); foldGroup(h); }
+  }, true);
+  for (const h of Array.from(dropdown.querySelectorAll<HTMLElement>(".type-dropdown-group"))) foldGroup(h);
+  // Fusion and category boxes close on a click elsewhere.
+  document.addEventListener("click", (ev) => {
+    const t = ev.target as HTMLElement;
+    for (const id of ["fusion-side", "cat-side"]) {
+      const box = document.getElementById(id);
+      if (box && box.classList.contains("visible") && !box.contains(t) && !t.closest("[data-action=merge-group],[data-action=cat-change]")) box.classList.remove("visible");
+    }
+  });
+  // Right click on a mention: change the category of its label.
+  document.addEventListener("contextmenu", (ev) => {
+    const s = (ev.target as HTMLElement).closest<HTMLElement>(".entity[data-idx]");
+    if (!s) return;
+    ev.preventDefault();
+    const idx = s.dataset.idx || "";
+    const ids = labelIds[s.dataset.groupKey || ""] || [/^added_/.test(idx) ? "a" + idx.slice(6) : Number(idx)];
+    openCategoryMenu(ids, ev.clientX, ev.clientY);
+  }, true);
+  // Escape cancels "add to a label".
+  document.addEventListener("keydown", (ev) => {
+    if (ev.key === "Escape" && pendingAddTarget) {
+      pendingAddTarget = null;
+      document.body.classList.remove("mode-ajout");
+      showToast("Ajout annulé", "restore");
+    }
+  });
   for (const item of Array.from(document.querySelectorAll<HTMLElement>(".type-dropdown-item[data-type]"))) {
     item.addEventListener("click", () => addEntity(item.dataset.type || "PERSON"));
   }
@@ -1585,7 +1973,7 @@ app.ontoolresult = (result: CallToolResult) => {
         payloads.push(candidate);
       } catch (err) {
         console.error(
-          "[review-app] get_review_payload failed for",
+          "[panneau] échec de get_review_payload pour",
           meta.session_id,
           err,
         );
@@ -1611,7 +1999,7 @@ app.onhostcontextchanged = (_ctx: McpUiHostContext) => {
 };
 
 app.onerror = (err) => {
-  console.error("[review-app] App error:", err);
+  console.error("[panneau] erreur de l'application :", err);
 };
 
 // ── Boot ───────────────────────────────────────────────────────────────────
@@ -1622,7 +2010,7 @@ initSidebarResize();
 initSidebarFilter();
 
 app.connect().catch((err: unknown) => {
-  console.error("[review-app] app.connect() rejected:", err);
+  console.error("[panneau] app.connect() rejeté :", err);
   $("doc-content").textContent =
     "Failed to connect to MCP host: " + (err instanceof Error ? err.message : String(err));
 });

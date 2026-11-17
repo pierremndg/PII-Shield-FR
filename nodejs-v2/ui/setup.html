@@ -22,7 +22,7 @@
     <div class="step-num">1</div>
     <div class="step-body">
       <h2>Download the GLiNER model</h2>
-      <p>One-time download, ~634 MB. The browser does the download — Windows Defender treats it like any normal file.</p>
+      <p>One-time download, ~935 MB (892 MiB). The browser does the download — Windows Defender treats it like any normal file.</p>
       <div class="actions">
         <button class="btn btn-primary" id="btn-download">Download model</button>
         <span class="hint" id="download-hint">Opens the release asset in your default browser.</span>
@@ -34,7 +34,7 @@
     <div class="step-num">2</div>
     <div class="step-body">
       <h2>Install the downloaded ZIP</h2>
-      <p>Once the browser finishes saving <code>gliner-pii-base-v1.0.zip</code>, click below — PII Shield finds it in your Downloads folder, validates it, and unpacks it into <code>~/.pii_shield/models/</code>.</p>
+      <p>Once the browser finishes saving <code>gliner_multi_pii-v1.zip</code>, click below — PII Shield finds it in your Downloads folder, validates it, and unpacks it into <code>~/.pii_shield/models/</code>.</p>
       <div class="actions">
         <button class="btn btn-primary" id="btn-install" disabled>Install downloaded ZIP</button>
         <span class="hint" id="install-hint">Click after the download completes.</span>
@@ -70,8 +70,8 @@
           then click <em>Install</em>.
         </li>
         <li>
-          <strong>Terminal one-liner</strong> (advanced) — see the README's <em>Install model</em>
-          section for the PowerShell / bash one-liner that downloads and installs in one step.
+          <strong>Script</strong> (advanced) — see the README's fallback: <code>install-model.ps1</code>
+          downloads the model files from Hugging Face and checks their SHA-256 checksums.
         </li>
       </ol>
     </details>

@@ -17,16 +17,18 @@
   <div class="topbar">
     <span class="shield-icon">&#x1f6e1;</span>
     <h1>PII Shield Review</h1>
+    <span class="profil-pii" style="font-size:12px;opacity:.75;margin-left:12px">Modèle : gliner_multi_pii-v1 (Urchade) · règles françaises : oui</span>
     <div class="stats">
-      <div class="stat"><span class="count" id="entity-count">0</span>&nbsp;entities</div>
-      <div class="stat"><span class="count" id="removed-count">0</span>&nbsp;removed</div>
-      <div class="stat"><span class="count" id="added-count">0</span>&nbsp;added</div>
+      <div class="stat"><span class="count" id="entity-count">0</span>&nbsp;entités</div>
+      <div class="stat"><span class="count" id="removed-count">0</span>&nbsp;retiré</div>
+      <div class="stat"><span class="count" id="added-count">0</span>&nbsp;ajouté</div>
     </div>
     <div class="spacer"></div>
-    <button class="btn-theme" id="theme-btn" title="Toggle dark/light theme"></button>
-    <button class="btn-split" id="split-btn" title="Toggle side-by-side view (original vs anonymized)">Split View</button>
-    <button class="btn btn-reset" id="reset-btn">Reset</button>
-    <button class="btn btn-approve" id="approve-btn">Approve</button>
+    <button class="btn-theme" id="theme-btn" title="Changer de thème clair ou sombre"></button>
+    <button class="btn-split active" id="btn-vue-orig" title="Afficher le texte original">Original</button>
+    <button class="btn-split active" id="btn-vue-anon" title="Afficher le texte pseudonymisé">Pseudonymisé</button>
+    <button class="btn btn-reset" id="reset-btn">Réinitialiser</button>
+    <button class="btn btn-approve" id="approve-btn">Valider</button>
   </div>
 
   <!-- Document tabs (bulk mode — shown when start_review receives >= 2 session_ids) -->
@@ -34,18 +36,18 @@
 
   <div class="instruction-bar">
     <span class="instruction-icon">&#x1f4cb;</span>
-    <span>Review detected PII entities below. <strong>Click</strong> a highlighted entity to remove it (all matching occurrences removed). <strong>Select text</strong> to add missed entities. Click <strong>Approve</strong> when done.</span>
+    <span>Relisez les entités PII détectées ci-dessous. <strong>Cliquez</strong> sur une entité surlignée pour la retirer (toutes ses occurrences identiques sont retirées). <strong>Sélectionnez du texte</strong> pour ajouter les entités oubliées. Cliquez sur <strong>Valider</strong> une fois terminé.</span>
   </div>
 </header>
 
 <div class="main" id="main-container">
   <div class="doc-panel">
     <div class="doc-pane doc-pane-orig">
-      <div class="doc-pane-label">Original (with entities)</div>
-      <div class="doc-content" id="doc-content">Waiting for data from PII Shield…</div>
+      <div class="doc-pane-label">Original (avec entités)</div>
+      <div class="doc-content" id="doc-content">En attente des données de PII Shield…</div>
     </div>
     <div class="doc-pane doc-pane-anon">
-      <div class="doc-pane-label">Anonymized</div>
+      <div class="doc-pane-label">Anonymisé</div>
       <div class="doc-content" id="doc-content-anon"></div>
     </div>
   </div>
@@ -55,9 +57,9 @@
     updates --sidebar-w CSS variable on .main. Final width persisted to
     localStorage (`pii-sidebar-w`). See initSidebarResize().
   -->
-  <div class="resize-handle" id="resize-handle" title="Drag to resize sidebar"></div>
+  <div class="resize-handle" id="resize-handle" title="Glisser pour redimensionner la colonne"></div>
   <div class="sidebar" style="display:flex;flex-direction:column;">
-    <div class="sidebar-header">Detected Entities</div>
+    <div class="sidebar-header">Entités détectées</div>
     <!--
       Filter input — substring-matches entity text across families and
       added-by-user list. Keyboard shortcut `/` focuses it (handled in
@@ -66,22 +68,29 @@
     -->
     <div class="sidebar-filter">
       <input type="text" id="filter-input" class="filter-input"
-             placeholder="Filter entities… (press /)"
+             placeholder="Filtrer les entités… (press /)"
              autocomplete="off" spellcheck="false" />
       <span class="filter-match-count" id="filter-match-count"></span>
     </div>
     <div class="entity-list" id="entity-list" style="flex:1;overflow-y:auto;"></div>
     <div class="how-it-works">
-      <div class="section-title">Keyboard</div>
-      <div class="hint"><span class="kbd">Tab</span> Next entity</div>
-      <div class="hint"><span class="kbd">&#x21E7;Tab</span> Previous entity</div>
-      <div class="hint"><span class="kbd">D</span> Remove focused</div>
-      <div class="hint"><span class="kbd">R</span> Restore focused</div>
-      <div class="hint"><span class="kbd">A</span> Approve</div>
-      <div class="hint"><span class="kbd">Esc</span> Clear focus</div>
-      <div class="section-title" style="margin-top:8px">Mouse</div>
-      <div class="hint"><span class="hint-icon">&#x2715;</span> Click entity to remove</div>
-      <div class="hint"><span class="hint-icon">&#x1F5B1;</span> Select text to add</div>
+      <div class="section-title">Clavier</div>
+      <div class="hint"><span class="kbd">Tab</span> Entité suivante</div>
+      <div class="hint"><span class="kbd">&#x21E7;Tab</span> Entité précédente</div>
+      <div class="hint"><span class="kbd">D</span> Retirer l'entité sélectionnée</div>
+      <div class="hint"><span class="kbd">R</span> Rétablir l'entité sélectionnée</div>
+      <div class="hint"><span class="kbd">A</span> Valider</div>
+      <div class="hint"><span class="kbd">Esc</span> Désélectionner</div>
+      <div class="section-title" style="margin-top:8px">Souris</div>
+      <div class="hint"><span class="hint-icon">&#x2715;</span> Cliquer sur une entité pour la retirer</div>
+      <div class="hint"><span class="hint-icon">&#x1F5B1;</span> Survol d’une étiquette : toutes ses occurrences</div>
+      <div class="hint"><span class="hint-icon">&#x1F5B1;</span> Survol d’une occurrence dépliée : celle-ci seulement</div>
+      <div class="hint"><span class="hint-icon">+</span> Ajouter un texte à l’étiquette</div>
+      <div class="hint"><span class="hint-icon">&#x21C4;</span> Fusionner avec une étiquette existante</div>
+      <div class="hint"><span class="hint-icon">&#x270E;</span> Changer la catégorie de l’étiquette</div>
+      <div class="hint"><span class="hint-icon">&#x1F5B1;</span> Clic droit sur une entité : changer sa catégorie</div>
+      <div class="hint"><span class="hint-icon">&#x1F5B1;</span> Sélection de texte : menu des étiquettes, fusion, changement</div>
+      <div class="hint"><span class="hint-icon">&#x1F5B1;</span> Sélectionner du texte pour ajouter</div>
     </div>
   </div>
 </div>
@@ -93,31 +102,31 @@
   the panel header.
 -->
 <div class="bottom-bar" id="bottom-bar">
-  <button class="btn-scroll-top" id="scroll-top-btn" title="Scroll back to top of review panel">&#x2191; To top</button>
-  <button class="btn btn-approve" id="approve-btn-bottom">Approve</button>
+  <button class="btn-scroll-top" id="scroll-top-btn" title="Revenir en haut du panneau">&#x2191; Haut de page</button>
+  <button class="btn btn-approve" id="approve-btn-bottom">Valider</button>
 </div>
 
 <div class="legend">
-  <div class="legend-item"><div class="legend-dot" style="background:var(--person)"></div> Person</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--org)"></div> Organization</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--location)"></div> Location</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--person)"></div> Personne</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--org)"></div> Organisation</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--location)"></div> Lieu</div>
   <div class="legend-item"><div class="legend-dot" style="background:var(--comm)"></div> Contact</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--financial)"></div> Financial</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--id-doc)"></div> ID / Document</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--medical)"></div> Medical</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--added); border: 1px dashed var(--added)"></div> Added by you</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--financial)"></div> Financier</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--id-doc)"></div> Identité / document</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--medical)"></div> Médical</div>
+  <div class="legend-item"><div class="legend-dot" style="background:transparent; border: 1px dashed var(--text-secondary)"></div> Ajouté à la main (tireté)</div>
   <div class="spacer"></div>
-  <div class="legend-item" style="color:var(--text-secondary)">Click entity to remove &middot; Select text to add</div>
+  <div class="legend-item" style="color:var(--text-secondary)">Cliquer sur une entité pour la retirer &middot; Sélectionner du texte pour ajouter</div>
 </div>
 
 <div class="selection-toolbar" id="selection-toolbar">
-  <button class="type-btn person" data-type="PERSON">Person</button>
-  <button class="type-btn org" data-type="ORGANIZATION">Org</button>
-  <button class="type-btn location" data-type="LOCATION">Location</button>
+  <button class="type-btn person" data-type="PERSON">Personne</button>
+  <button class="type-btn org" data-type="ORGANIZATION">Organisation</button>
+  <button class="type-btn location" data-type="LOCATION">Lieu</button>
   <button class="type-btn comm" data-type="EMAIL_ADDRESS">Contact</button>
-  <button class="type-btn financial" data-type="CREDIT_CARD">Financial</button>
-  <button class="type-btn id-doc" data-type="US_SSN">ID</button>
-  <button class="type-btn-more" id="type-more-btn" title="More types">&#x22EF;</button>
+  <button class="type-btn financial" data-type="CREDIT_CARD">Financier</button>
+  <button class="type-btn id-doc" data-type="US_SSN">Pièces d'identité</button>
+  <button class="type-btn-more" id="type-more-btn" title="Autres types">&#x22EF;</button>
   <div class="type-dropdown" id="type-dropdown">
     <div class="type-dropdown-group">Person</div>
     <div class="type-dropdown-item" data-type="PERSON"><span class="dot" style="background:var(--person)"></span>Person</div>
@@ -162,9 +171,9 @@
 <div class="approved-overlay" id="approved-overlay">
   <div class="approved-card" id="approved-card">
     <div class="checkmark">&#x2705;</div>
-    <h2>Review Approved</h2>
+    <h2>Relecture validée</h2>
     <p id="approved-saved-hint" style="margin-top:12px; font-size:12px; color:var(--text-secondary);">
-      Approved. Send any short message in chat to continue.
+      Validé. Envoyez un court message dans le chat pour continuer.
     </p>
   </div>
 </div>

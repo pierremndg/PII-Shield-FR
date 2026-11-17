@@ -22,6 +22,9 @@
   --financial: #ef4444; --financial-bg: #fee2e2;
   --id-doc: #ec4899; --id-doc-bg: #fce7f3;
   --medical: #14b8a6; --medical-bg: #ccfbf1;
+  --date: #4d7c0f; --date-bg: #ecfccb;
+  --institution: #4338ca; --institution-bg: #e0e7ff;
+  --juridiction: #c2410c; --juridiction-bg: #ffedd5;
   --other: #6b7280; --other-bg: #f3f4f6;
   --danger: #ef4444; --danger-bg: #fee2e2;
   --added: #0ea5e9; --added-bg: #e0f2fe;
@@ -36,6 +39,9 @@
   --financial: #f87171; --financial-bg: #7f1d1d;
   --id-doc: #f472b6; --id-doc-bg: #831843;
   --medical: #2dd4bf; --medical-bg: #134e4a;
+  --date: #bef264; --date-bg: #365314;
+  --institution: #a5b4fc; --institution-bg: #312e81;
+  --juridiction: #fdba74; --juridiction-bg: #7c2d12;
   --other: #9ca3af; --other-bg: #374151;
   --danger: #f87171; --danger-bg: #7f1d1d;
   --added: #38bdf8; --added-bg: #0c4a6e;
@@ -51,6 +57,9 @@
     --financial: #f87171; --financial-bg: #7f1d1d;
     --id-doc: #f472b6; --id-doc-bg: #831843;
     --medical: #2dd4bf; --medical-bg: #134e4a;
+    --date: #bef264; --date-bg: #365314;
+    --institution: #a5b4fc; --institution-bg: #312e81;
+    --juridiction: #fdba74; --juridiction-bg: #7c2d12;
     --other: #9ca3af; --other-bg: #374151;
     --danger: #f87171; --danger-bg: #7f1d1d;
     --added: #38bdf8; --added-bg: #0c4a6e;
@@ -89,6 +98,8 @@ body {
   display: flex; align-items: center; gap: 8px; padding: 6px 12px;
   background: var(--surface); border-bottom: 1px solid var(--border);
 }
+.topbar { flex-wrap: wrap; }
+.topbar .profil-pii { order: 99; flex: 1 1 100%; margin: 0 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .topbar h1 { font-size: 13px; font-weight: 600; flex-shrink: 0; }
 .topbar .shield-icon { font-size: 16px; }
 .stats { display: flex; gap: 6px; margin-left: 8px; }
@@ -142,9 +153,12 @@ body {
 .entity-COMM { background: var(--comm-bg); border-color: var(--comm); color: var(--comm); }
 .entity-FINANCIAL { background: var(--financial-bg); border-color: var(--financial); color: var(--financial); }
 .entity-ID_DOC { background: var(--id-doc-bg); border-color: var(--id-doc); color: var(--id-doc); }
+.entity-DATE { background: var(--date-bg); border-color: var(--date); color: var(--date); }
+.entity-INSTITUTION { background: var(--institution-bg); border-color: var(--institution); color: var(--institution); }
+.entity-JURIDICTION { background: var(--juridiction-bg); border-color: var(--juridiction); color: var(--juridiction); }
 .entity-MEDICAL { background: var(--medical-bg); border-color: var(--medical); color: var(--medical); }
 .entity-OTHER { background: var(--other-bg); border-color: var(--other); color: var(--other); }
-.entity-added { border-style: dashed; background: var(--added-bg) !important; border-color: var(--added) !important; color: var(--added) !important; }
+.entity-added { border-style: dashed; }
 
 /* Entity Tooltip — minimal type label on hover */
 .entity-tooltip {
@@ -255,6 +269,9 @@ body {
 .type-COMM .type-badge { background: var(--comm-bg); color: var(--comm); }
 .type-FINANCIAL .type-badge { background: var(--financial-bg); color: var(--financial); }
 .type-ID_DOC .type-badge { background: var(--id-doc-bg); color: var(--id-doc); }
+.type-DATE .type-badge { background: var(--date-bg); color: var(--date); }
+.type-INSTITUTION .type-badge { background: var(--institution-bg); color: var(--institution); }
+.type-JURIDICTION .type-badge { background: var(--juridiction-bg); color: var(--juridiction); }
 .type-MEDICAL .type-badge { background: var(--medical-bg); color: var(--medical); }
 .type-OTHER .type-badge { background: var(--other-bg); color: var(--other); }
 .entity-item .text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -360,6 +377,22 @@ body {
 /* Group hover — highlight all matching entities */
 .entity.group-hover { outline: 2px solid currentColor; outline-offset: 1px; }
 .entity-item.group-hover { background: var(--bg); }
+
+/* ── French fork: label list, views, menus ──────────────────────────────── */
+.main.only-anon .doc-pane-orig { display: none !important; }
+.main.only-anon .doc-pane-anon { display: block !important; }
+.mode-ajout .doc-content { cursor: text; outline: 2px dashed var(--accent); outline-offset: 4px; }
+.entity-item.group-hover { background: color-mix(in srgb, var(--accent) 14%, var(--surface)) !important; box-shadow: inset 3px 0 0 var(--accent); }
+.selection-toolbar .type-btn { text-transform: uppercase; font-size: 10px; font-weight: 600; letter-spacing: .3px; padding: 3px 7px; }
+.type-dropdown-item .type-badge { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: .3px; }
+#type-dropdown.mode-change::before { content: attr(data-titre); display: block; padding: 4px 8px; font-size: 10px; font-weight: 600; color: var(--accent); text-transform: uppercase; }
+.entity-item { gap: 2px; }
+.entity-item .action-btn { margin-left: 0; width: 18px; height: 18px; font-size: 11px; }
+.entity-tooltip { background: inherit !important; color: inherit !important; border-color: currentColor !important; text-transform: uppercase; font-size: 10px; font-weight: 600; letter-spacing: .3px; padding: 2px 6px; }
+.type-dropdown.down { bottom: auto; top: calc(100% + 4px); }
+.type-dropdown-group { cursor: pointer; user-select: none; }
+.type-dropdown-group::after { content: "▾"; }
+.type-dropdown-group.collapsed::after { content: "▸"; }
 
 /* Toast notification */
 .toast {
@@ -521,9 +554,12 @@ body {
 .anon-placeholder.ph-COMM { background: var(--comm-bg); color: var(--comm); }
 .anon-placeholder.ph-FINANCIAL { background: var(--financial-bg); color: var(--financial); }
 .anon-placeholder.ph-ID_DOC { background: var(--id-doc-bg); color: var(--id-doc); }
+.anon-placeholder.ph-DATE { background: var(--date-bg); color: var(--date); }
+.anon-placeholder.ph-INSTITUTION { background: var(--institution-bg); color: var(--institution); }
+.anon-placeholder.ph-JURIDICTION { background: var(--juridiction-bg); color: var(--juridiction); }
 .anon-placeholder.ph-MEDICAL { background: var(--medical-bg); color: var(--medical); }
 .anon-placeholder.ph-OTHER { background: var(--other-bg); color: var(--other); }
-.anon-placeholder.ph-added { border: 1px dashed var(--added); background: var(--added-bg); color: var(--added); }
+.anon-placeholder.ph-added { border: 1px dashed currentColor; }
 .anon-restored { opacity: 0.4; text-decoration: line-through; font-style: italic; }
 
 /* Theme toggle */
