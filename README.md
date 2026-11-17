@@ -21,7 +21,7 @@ Cette version adapte PII Shield au droit français : règles françaises (SIRET,
 
 Prérequis : Windows et Claude Desktop. Ni Node.js ni Git ni Python ne sont nécessaires.
 
-Les fichiers sont sur la page des releases de ce dépôt (https://github.com/pierremndg/PII-Shield-FR/releases, **pas encore publiée**) :
+Les fichiers sont sur la page des releases de ce dépôt (https://github.com/pierremndg/PII-Shield-FR/releases) :
 - `pii-shield-fr-v2.2.0-fr.1.mcpb` : le plugin ;
 - `gliner_multi_pii-v1.zip` : le modèle de détection (environ 935 Mo (892 Mio), ONNX). C'est le modèle `gliner_multi_pii-v1` d'[Urchade](https://huggingface.co/urchade/gliner_multi_pii-v1) (licence Apache 2.0), dans la conversion ONNX publiée par [`onnx-community`](https://huggingface.co/onnx-community/gliner_multi_pii-v1), sans modification des poids. Nous l'avons mis en zip avec `scripts/build-model-zip.py`, et une note d'attribution y est jointe.
 
@@ -141,7 +141,7 @@ The CLI uses the same engine, mappings, and audit log as the MCP variants. Sessi
 
 ### Step 1 — download the artefacts
 
-Version française : les fichiers sont sur la page des releases de ce dépôt (https://github.com/pierremndg/PII-Shield-FR/releases, **pas encore publiée**) :
+Version française : les fichiers sont sur la page des releases de ce dépôt (https://github.com/pierremndg/PII-Shield-FR/releases) :
 
 | File | What | OS |
 |---|---|---|
@@ -274,9 +274,9 @@ Authoritative list is `nodejs-v2/src/engine/entity-types.ts` (`SUPPORTED_ENTITIE
 `EU_VAT`, `EU_PASSPORT`
 
 **Country-specific**:
-`DE_TAX_ID`, `DE_SOCIAL_SECURITY`, `FR_NIR`, `FR_CNI`, `IT_FISCAL_CODE`, `IT_VAT`, `ES_DNI`, `ES_NIE`, `CY_TIC`, `CY_ID_CARD`, `FI_HETU`, `FI_BUSINESS_ID`
+`DE_TAX_ID`, `DE_SOCIAL_SECURITY`, `FR_NIR`, `FR_CNI`, `IT_FISCAL_CODE`, `IT_VAT`, `ES_DNI`, `ES_NIE`, `CY_TIC`, `CY_ID_CARD`
 
-35 types total (4 NER + 31 pattern-based).
+33 types total (4 NER + 29 pattern-based).
 
 ## Logs
 
@@ -366,7 +366,7 @@ PII Shield builds on excellent open-source projects:
 - **[GLiNER](https://github.com/urchade/GLiNER)** + [`urchade/gliner_multi_pii-v1`](https://huggingface.co/urchade/gliner_multi_pii-v1) — zero-shot NER backbone (the original product used `knowledgator/gliner-pii-base-v1.0`).
 - **[onnxruntime-node](https://github.com/microsoft/onnxruntime)** — the CPU inference engine.
 - **[`@xenova/transformers`](https://github.com/xenova/transformers.js)** — tokenizer + HF weights loader on top of ONNX Runtime.
-- **[docx](https://github.com/dolanmiu/docx)** + **[jszip](https://stuk.github.io/jszip/)** + **[@adeu/core](https://github.com/dealfluence/adeu)** — pure-JS `.docx` read / write / track-changes.
+- **[docx](https://github.com/dolanmiu/docx)** + **[jszip](https://stuk.github.io/jszip/)** + **[@ansonlai/docx-redline-js](https://github.com/ansonlai/docx-redline-js)** — pure-JS `.docx` read / write / track-changes.
 - **[Claude Desktop](https://claude.ai/download)** + the [Model Context Protocol](https://modelcontextprotocol.io) — host runtime and tool surface.
 
 ## Author
