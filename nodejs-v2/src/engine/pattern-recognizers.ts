@@ -6,6 +6,8 @@
  * Context words boost confidence by +0.35.
  */
 
+import { buildFrenchRecognizers } from "./fr-recognizers.js";
+
 export interface DetectedEntity {
   text: string;
   type: string;
@@ -438,6 +440,9 @@ function buildRecognizers(): RecognizerDef[] {
     ],
     context: ["y-tunnus", "ytunnus", "yritystunnus", "yhteisötunnus", "business id", "FO-nummer", "VAT", "company number", "organisation number"],
   });
+
+  // France — identifiers (SIRET, SIREN, FINESS, RPPS, phone, IBAN, plate, RIB)
+  recognizers.push(...buildFrenchRecognizers());
 
   return recognizers;
 }
@@ -1035,7 +1040,8 @@ export function runPatternRecognizers(text: string): DetectedEntity[] {
   // Final cleanup: strip label prefixes from PERSON captures & reject fragments
   const cleanedResults: DetectedEntity[] = [];
   for (const e of results) {
-    if (e.type !== "PERSON") {
+    // French rules (pattern:fr_*) are spared: they carry the single name after a civility and the birth date.
+    if (e.type !== "PERSON" || e.reason.startsWith("pattern:fr_")) {
       cleanedResults.push(e);
       continue;
     }

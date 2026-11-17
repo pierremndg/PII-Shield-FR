@@ -9,6 +9,13 @@ import { runPatternRecognizers, type DetectedEntity } from "./pattern-recognizer
 import { deduplicateOverlaps, expandOrgBoundaries, trimOrgPrefix, expandLocationBoundaries, mergeAdjacentLocations, expandAddressBlocks, cleanBoundaries, assignPlaceholders, type AnonymizeResult, type PlaceholderState } from "./entity-dedup.js";
 import { filterJurisdictionEntities, filterCurrencyEntities, filterGarbageNerEntities } from "./false-positive-filter.js";
 import { initNer, isNerReady, runNer, nerLog } from "./ner-backend.js";
+import { removeGenericSyndic, trimLowercaseNameTail } from "./fr-ner-corrections.js";
+import { flagWrongFrenchKeys } from "./fr-recognizers.js";
+import {
+  stripCivility, dropLoneWords, dropLowercasePersons, dropCaseReference, fixSplitName, dropArticleOrg,
+  dropNonIdentifiers, dropTerritoryInOrg, dropBareInstitution, applyFrenchPriority,
+  assignOrgSubtype, assignPersonRole, mergeContiguousAddresses, propagateSessionPersons, debugFR,
+} from "./fr-filters.js";
 import { logServer } from "../audit/audit-logger.js";
 
 /**
@@ -337,6 +344,14 @@ export class PIIEngine {
     // 2.5. Merge adjacent LOCATION fragments from NER (before combining with patterns)
     nerResults = mergeAdjacentLocations(text, nerResults);
 
+    // 2.6. Corrections for the gliner_multi_pii-v1 model (see fr-ner-corrections.ts)
+    nerResults = removeGenericSyndic(nerResults);
+    nerResults = trimLowercaseNameTail(nerResults);
+    // French name filters (see fr-filters.ts): civility, lone words, names without a capital
+    nerResults = stripCivility(nerResults);
+    nerResults = dropLoneWords(nerResults);
+    nerResults = dropLowercasePersons(text, nerResults);
+
     // 3. Merge all results
     logServer(`[Detect] step 3: merge + filter (minScore=${minScore})...`);
     let allResults = [...patternResults, ...nerResults];
@@ -345,13 +360,27 @@ export class PIIEngine {
 
     // 3.5. Expand boundaries: ORG suffixes + truncated multi-word locations
     logServer(`[Detect] step 3.5: expandOrgBoundaries + trimOrgPrefix + expandLocationBoundaries...`);
+    allResults = flagWrongFrenchKeys(allResults); // wrong control key (NIR, IBAN, RIB, Luhn…) → *_A_VERIFIER
+    allResults = dropCaseReference(text, allResults);
+    allResults = fixSplitName(text, allResults);
+    allResults = dropArticleOrg(allResults);
     allResults = expandOrgBoundaries(text, allResults);
     allResults = trimOrgPrefix(text, allResults);
     allResults = expandLocationBoundaries(text, allResults);
 
+    // French rules: non-identifiers out, territory inside an org name, bare institutions, priority of fr_* rules, sub-types
+    allResults = dropNonIdentifiers(allResults);
+    allResults = dropTerritoryInOrg(allResults);
+    allResults = dropBareInstitution(allResults);
+    debugFR("avant priorité", allResults);
+    allResults = applyFrenchPriority(text, allResults);
+    allResults = assignOrgSubtype(text, allResults);
+    allResults = assignPersonRole(text, allResults);
+
     // 4. Deduplicate overlapping spans
     logServer(`[Detect] step 4: dedup...`);
     allResults = deduplicateOverlaps(allResults);
+    debugFR("après dédoublonnage", allResults);
     logServer(`[Detect] step 4 done: ${allResults.length} after dedup`);
 
     // 5. Clean boundaries (snap words + filter false positives)
@@ -384,6 +413,8 @@ export class PIIEngine {
     allResults = filterJurisdictionEntities(allResults, text);
     allResults = filterCurrencyEntities(allResults, text);
 
+    allResults = mergeContiguousAddresses(text, allResults);
+
     logServer(`[Detect] DONE: ${allResults.length} entities`);
     return allResults;
   }
@@ -400,7 +431,8 @@ export class PIIEngine {
     prefix = "",
     sharedState?: PlaceholderState,
   ): Promise<AnonymizeResult> {
-    const entities = await this.detect(text, language);
+    // French: persons already marked in another document of the session are found here too, with the same placeholder.
+    const entities = propagateSessionPersons(text, await this.detect(text, language), sharedState);
     return assignPlaceholders(entities, prefix, sharedState);
   }
 

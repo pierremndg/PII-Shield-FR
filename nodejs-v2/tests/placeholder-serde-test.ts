@@ -89,9 +89,9 @@ function run(): void {
   // 4. Reconstruct from mapping only (legacy session path)
   // Simulate a mapping from an old session that lacks placeholder_state.
   const legacyMapping: Record<string, string> = {
-    "<ORG_1>": "Acme Corporation",
-    "<ORG_1a>": "Acme Corp.",
-    "<PERSON_1>": "John Smith",
+    "<ORGANISATION_1>": "Acme Corporation",
+    "<ORGANISATION_1a>": "Acme Corp.",
+    "<PERSONNE_1>": "John Smith",
     "<EMAIL_1>": "jsmith@example.com",
   };
   const reconstructed = reconstructPlaceholderState(legacyMapping);
@@ -99,39 +99,39 @@ function run(): void {
   check(reconstructed.typeCounters.get("ORGANIZATION") === 1, "reconstruct: ORG counter = 1");
   check(reconstructed.typeCounters.get("PERSON") === 1, "reconstruct: PERSON counter = 1");
   const acmeRecon = reconstructed.seenExact.get("ORGANIZATION::acme corporation");
-  check(acmeRecon === "<ORG_1>", "reconstruct: Acme Corporation → <ORG_1>");
+  check(acmeRecon === "<ORGANISATION_1>", "reconstruct: Acme Corporation → <ORGANISATION_1>");
   const acmeCorpRecon = reconstructed.seenExact.get("ORGANIZATION::acme corp");
-  check(acmeCorpRecon === "<ORG_1a>", "reconstruct: 'Acme Corp.' normalized reversed");
+  check(acmeCorpRecon === "<ORGANISATION_1a>", "reconstruct: 'Acme Corp.' normalized reversed");
   const familyAcme = reconstructed.seenFamily.get("ORGANIZATION::acme corporation");
   check(!!familyAcme && familyAcme.familyNumber === 1 && familyAcme.variantCounter === 1,
     "reconstruct: family Acme has variantCounter=1 (a)");
 
   // Extend reconstructed state — new doc with more variants shouldn't collide
   const entsDoc3: DetectedEntity[] = [
-    mkEntity("Acme Corporation", "ORGANIZATION", 0),        // reuse <ORG_1>
-    mkEntity("Acme Corp.", "ORGANIZATION", 30),             // reuse <ORG_1a>
-    mkEntity("Pepsi Inc.", "ORGANIZATION", 60),             // new family → <ORG_2>
-    mkEntity("Jane Doe", "PERSON", 90),                     // new → <PERSON_2>
+    mkEntity("Acme Corporation", "ORGANIZATION", 0),        // reuse <ORGANISATION_1>
+    mkEntity("Acme Corp.", "ORGANIZATION", 30),             // reuse <ORGANISATION_1a>
+    mkEntity("Pepsi Inc.", "ORGANIZATION", 60),             // new family → <ORGANISATION_2>
+    mkEntity("Jane Doe", "PERSON", 90),                     // new → <PERSONNE_2>
   ];
   const r3 = assignPlaceholders(entsDoc3, "", reconstructed);
   const acmeR3 = r3.entities.find((e) => e.text === "Acme Corporation")?.placeholder;
-  check(acmeR3 === "<ORG_1>", "extend: Acme Corporation reused <ORG_1>");
+  check(acmeR3 === "<ORGANISATION_1>", "extend: Acme Corporation reused <ORGANISATION_1>");
   const acmeCorpR3 = r3.entities.find((e) => e.text === "Acme Corp.")?.placeholder;
-  check(acmeCorpR3 === "<ORG_1a>", "extend: Acme Corp. reused <ORG_1a>");
+  check(acmeCorpR3 === "<ORGANISATION_1a>", "extend: Acme Corp. reused <ORGANISATION_1a>");
   const pepsiR3 = r3.entities.find((e) => e.text === "Pepsi Inc.")?.placeholder;
-  check(pepsiR3 === "<ORG_2>", "extend: Pepsi got <ORG_2> (no collision)");
+  check(pepsiR3 === "<ORGANISATION_2>", "extend: Pepsi got <ORGANISATION_2> (no collision)");
   const janeR3 = r3.entities.find((e) => e.text === "Jane Doe")?.placeholder;
-  check(janeR3 === "<PERSON_2>", "extend: Jane got <PERSON_2> (no collision)");
+  check(janeR3 === "<PERSONNE_2>", "extend: Jane got <PERSONNE_2> (no collision)");
 
   // 5. With prefix — reconstruct should strip D1/D2 prefix correctly
   const prefixedMapping: Record<string, string> = {
-    "<D1_ORG_1>": "Acme",
-    "<D1_PERSON_1>": "John",
+    "<D1_ORGANISATION_1>": "Acme",
+    "<D1_PERSONNE_1>": "John",
   };
   const reconPrefixed = reconstructPlaceholderState(prefixedMapping);
   check(reconPrefixed.typeCounters.get("ORGANIZATION") === 1, "reconstruct with prefix: ORG counter=1");
-  check(reconPrefixed.seenExact.get("ORGANIZATION::acme") === "<D1_ORG_1>",
-    "reconstruct with prefix: acme → <D1_ORG_1> in seenExact");
+  check(reconPrefixed.seenExact.get("ORGANIZATION::acme") === "<D1_ORGANISATION_1>",
+    "reconstruct with prefix: acme → <D1_ORGANISATION_1> in seenExact");
 
   console.log(`\n${passed} passed, ${failed} failed.`);
   process.exit(failed === 0 ? 0 : 1);

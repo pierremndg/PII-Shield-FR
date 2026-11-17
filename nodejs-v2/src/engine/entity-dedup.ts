@@ -10,6 +10,7 @@
  */
 
 import { TAG_NAMES } from "./entity-types.js";
+import { normalizePhoneOrDate, samePersonFamily, sameInstitutionFamily } from "./fr-filters.js";
 import { filterFalsePositives } from "./false-positive-filter.js";
 import type { DetectedEntity } from "./pattern-recognizers.js";
 
@@ -27,6 +28,9 @@ export interface AnonymizeResult {
 // ── Normalize ────────────────────────────────────────────────────────────────
 
 function normalize(text: string): string {
+  // French: one key for a phone number or a date written several ways
+  const frKey = normalizePhoneOrDate(text);
+  if (frKey !== null) return frKey;
   return text.toLowerCase().trim().replace(/[.,;:]+$/, "").replace(/\s+/g, " ");
 }
 
@@ -643,6 +647,20 @@ function variantLetterToNumber(v: string): number {
   return 0;
 }
 
+// French fork: merges chosen in the review panel (text → existing label, same type). While numbering,
+// the merged text is looked up under the key of its target, so both get the same placeholder.
+let MERGE_ALIAS: Map<string, string> | null = null;
+
+/** Run `fn` with the reviewer's merges active (used around assignPlaceholders). */
+export function withMerges<T>(merge: Array<{ type: string; from: string; to: string }> | undefined, fn: () => T): T {
+  MERGE_ALIAS = new Map((merge || []).map((m) => [m.type + "::" + normalize(m.from), normalize(m.to)]));
+  try {
+    return fn();
+  } finally {
+    MERGE_ALIAS = null;
+  }
+}
+
 function getOrCreatePlaceholder(
   etype: string,
   text: string,
@@ -652,7 +670,8 @@ function getOrCreatePlaceholder(
   mapping: Record<string, string>,
   prefix: string,
 ): string {
-  const norm = normalize(text);
+  let norm = normalize(text);
+  if (MERGE_ALIAS && MERGE_ALIAS.has(etype + "::" + norm)) norm = MERGE_ALIAS.get(etype + "::" + norm)!;
   const exactKey = `${etype}::${norm}`;
 
   // 1. Exact match — reuse placeholder
@@ -670,6 +689,8 @@ function getOrCreatePlaceholder(
     for (const [key, info] of seenFamily) {
       const [ft, fn] = key.split("::", 2);
       if (ft !== etype) continue;
+      // French: same person with an initial or the family name alone; same institution by acronym or full form
+      if (samePersonFamily(etype, norm, fn) || sameInstitutionFamily(etype, norm, fn)) { familyKey = key; break; }
       if (fn.length >= 4 && (norm.includes(fn) || fn.includes(norm))) {
         const shorter = Math.min(norm.length, fn.length);
         const longer = Math.max(norm.length, fn.length);

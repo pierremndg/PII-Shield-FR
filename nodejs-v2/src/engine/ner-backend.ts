@@ -1,13 +1,14 @@
 /**
  * PII Shield v2.0.2 ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â GLiNER NER Backend
  * Uses the `gliner` npm package (Node.js variant) with onnxruntime-node.
- * Model: knowledgator/gliner-pii-base-v1.0 (ONNX fp32, ~634 MB)
+ * Model: urchade/gliner_multi_pii-v1 (ONNX fp32, ~1.1 GB). Replaces the original
+ * knowledgator/gliner-pii-base-v1.0 (fork FR decision).
  *
  * The model is **not** bundled in the .mcpb (keeps the plugin <2 MB for fast
  * install). End users run `scripts/install-model.ps1` (Windows) or
  * `scripts/install-model.sh` (macOS/Linux) before installing the .mcpb ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â these
- * scripts pull `gliner-pii-base-v1.0.zip` from the PII Shield GitHub
- * release and unpack it into `~/.pii_shield/models/gliner-pii-base-v1.0/`.
+ * scripts pull `gliner_multi_pii-v1.zip` from the PII Shield GitHub
+ * release and unpack it into `~/.pii_shield/models/gliner_multi_pii-v1/`.
  * See `ensureModelFiles` below for the runtime
  * auto-BFS that finds the model across several common locations, and the
  * `NEEDS_SETUP` envelope in `src/index.ts:handleListEntities` for the
@@ -664,11 +665,10 @@ export function nerLog(msg: string): void {
 //   that @xenova/transformers AutoTokenizer can't parse.
 // fp32/665 MB is the only execution-stable option, hence it's the variant we
 // bundle.
-const MODEL_SLUG = "gliner-pii-base-v1.0";
+export const MODEL_SLUG = "gliner_multi_pii-v1";
 const TOKENIZER_FILES = [
   "tokenizer.json",
   "tokenizer_config.json",
-  "special_tokens_map.json",
   "gliner_config.json",
 ] as const;
 
@@ -825,7 +825,7 @@ async function ensureModelFiles(): Promise<{ modelPath: string; tokenizerDir: st
  * suffix when a user downloads more than once. Case-insensitive — Windows
  * filesystems are case-preserving but case-insensitive for matching.
  */
-const MODEL_ZIP_FILENAME_PATTERN = /^gliner-pii-base-v1\.0(?:\s\(\d+\))?\.zip$/i;
+const MODEL_ZIP_FILENAME_PATTERN = /^gliner_multi_pii-v1(?:\s\(\d+\))?\.zip$/i;
 
 /**
  * Marker filename for the Tier-2 fallback. User drops an empty file with
@@ -950,8 +950,8 @@ function getCandidateDownloadDirs(): string[] {
 
 /**
  * Find the highest-numbered matching ZIP in `dir` (non-recursive). Picks
- * `gliner-pii-base-v1.0 (3).zip` over `gliner-pii-base-v1.0 (1).zip` over
- * `gliner-pii-base-v1.0.zip` — Chrome dedupe convention means the highest
+ * `gliner_multi_pii-v1 (3).zip` over `gliner_multi_pii-v1 (1).zip` over
+ * `gliner_multi_pii-v1.zip` — Chrome dedupe convention means the highest
  * suffix is the most recent download. Returns absolute path or null.
  */
 function findZipInDir(dir: string): string | null {
@@ -1049,7 +1049,7 @@ export interface InstallZipResult {
 }
 
 /**
- * Extract a `gliner-pii-base-v1.0*.zip` into a temporary staging dir under
+ * Extract a `gliner_multi_pii-v1*.zip` into a temporary staging dir under
  * `~/.pii_shield/models/`, validate via the existing `isValidModelDir()`,
  * then atomically `renameSync` into the canonical model dir. JSZip handles
  * the unpack — already a runtime dep used by docx-reader / docx-redliner /

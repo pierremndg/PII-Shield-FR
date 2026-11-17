@@ -71,7 +71,7 @@ async function main(): Promise<void> {
   check(loaded!.state.typeCounters.get("PERSON") === 1, "PERSON counter=1 in loaded state");
   check(loaded!.documents.length === 1, "documents roundtrip");
   check(loaded!.documents[0].source_hash === "sha256:aaa", "document source_hash roundtrip");
-  check(loaded!.mapping["<ORG_1>"] === "Acme Corporation", "mapping entry roundtrip");
+  check(loaded!.mapping["<ORGANISATION_1>"] === "Acme Corporation", "mapping entry roundtrip");
 
   // Extend: add another doc, re-save, verify placeholder reuse works
   const loaded2 = loadSessionState(sid)!;
@@ -100,16 +100,16 @@ async function main(): Promise<void> {
 
   // Legacy BC: mapping saved via old saveMapping with no placeholder_state
   const legacySid = newSessionId();
-  saveMapping(legacySid, { "<ORG_1>": "Pepsi Co.", "<PERSON_1>": "Bob Legacy" }, { source: "/tmp/legacy.docx" });
+  saveMapping(legacySid, { "<ORGANISATION_1>": "Pepsi Co.", "<PERSONNE_1>": "Bob Legacy" }, { source: "/tmp/legacy.docx" });
   const legacyLoaded = loadSessionState(legacySid);
   check(legacyLoaded !== null, "legacy session loads");
   check(legacyLoaded!.state.typeCounters.get("ORGANIZATION") === 1, "legacy: ORG counter reconstructed");
-  check(legacyLoaded!.state.seenExact.get("ORGANIZATION::pepsi co") === "<ORG_1>", "legacy: seenExact reconstructed");
+  check(legacyLoaded!.state.seenExact.get("ORGANIZATION::pepsi co") === "<ORGANISATION_1>", "legacy: seenExact reconstructed");
   check(legacyLoaded!.documents.length === 0, "legacy: empty documents list");
 
   // loadMapping() keeps working for old callers
   const mapOnly = loadMapping(sid);
-  check(mapOnly["<ORG_1>"] === "Acme Corporation", "loadMapping() unchanged BC");
+  check(mapOnly["<ORGANISATION_1>"] === "Acme Corporation", "loadMapping() unchanged BC");
 
   // Cleanup
   fs.rmSync(tmpRoot, { recursive: true, force: true });

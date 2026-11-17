@@ -7,7 +7,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-export const VERSION = "2.2.0";
+export const VERSION = "2.2.0-fr.1";
 
 /**
  * Resolve the persistent data directory for this plugin instance.
@@ -141,7 +141,7 @@ export const ENV = {
   PII_NER_THRESHOLD: parseFloat(process.env.PII_NER_THRESHOLD || "0.30"),
 
   /** GLiNER model name (for ONNX export reference) */
-  PII_GLINER_MODEL: process.env.PII_GLINER_MODEL || "knowledgator/gliner-pii-base-v1.0",
+  PII_GLINER_MODEL: process.env.PII_GLINER_MODEL || "urchade/gliner_multi_pii-v1",
 
   /** Mapping TTL in days */
   PII_MAPPING_TTL_DAYS: parseInt(process.env.PII_MAPPING_TTL_DAYS || "7", 10),

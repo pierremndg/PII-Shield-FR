@@ -196,7 +196,7 @@ async function main() {
     );
     must(
       typeof startContent.model_zip_url === "string" &&
-        startContent.model_zip_url.includes("gliner-pii-base-v1.0.zip"),
+        startContent.model_zip_url.includes("urchade"),
       "start_model_setup missing model_zip_url",
     );
     console.log(
@@ -246,7 +246,7 @@ async function main() {
         "       install_model_from_download cleanly returns not_found in an empty sandbox.\n" +
         "\nNote: this smoke does NOT exercise the actual ZIP-extract → atomic-install\n" +
         "      → forceReinitNer happy path. To validate end-to-end, drop a real\n" +
-        "      gliner-pii-base-v1.0.zip in the sandbox Downloads dir and re-call\n" +
+        "      gliner_multi_pii-v1.zip in the sandbox Downloads dir and re-call\n" +
         "      install_model_from_download (or run it manually against your real\n" +
         "      ~/Downloads after a release-page download).",
     );

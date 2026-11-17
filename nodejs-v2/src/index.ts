@@ -57,6 +57,7 @@ import {
   retryNerIfRepairDetected,
   findDownloadedGlinerZip,
   extractAndInstallModelZip,
+  MODEL_SLUG,
 } from "./engine/ner-backend.js";
 import {
   saveMapping, loadMapping, getMappingSafe, newSessionId,
@@ -105,7 +106,7 @@ import {
   exportSessionToFile,
   importSessionFromFile,
 } from "./portability/session-archive.js";
-import { assignPlaceholders, deduplicateOverlaps, createPlaceholderState, type PlaceholderState } from "./engine/entity-dedup.js";
+import { assignPlaceholders, withMerges, deduplicateOverlaps, createPlaceholderState, type PlaceholderState } from "./engine/entity-dedup.js";
 import type { DetectedEntity } from "./engine/pattern-recognizers.js";
 import { logNer } from "./audit/audit-logger.js";
 
@@ -306,7 +307,7 @@ async function reanonymizeWithReview(
   }
 
   const correctedEntities = applyOverridesToEntities(originalText, baseEntities, overrides);
-  const { entities: placed, mapping } = assignPlaceholders(correctedEntities, prefix);
+  const { entities: placed, mapping } = withMerges(overrides.merge, () => assignPlaceholders(correctedEntities, prefix));
 
   // Persist the new mapping under the SAME session_id so subsequent
   // deanonymize_text / deanonymize_docx calls keep working transparently.
@@ -530,10 +531,10 @@ async function handleGetMapping(args: ToolArgs): Promise<string> {
 // VERSION already drives `RELEASE_SCRIPT_BASE`; the raw
 // content URL is intentionally unpinned.
 const INSTALL_SCRIPT_RAW_BASE =
-  "https://raw.githubusercontent.com/gregmos/PII-Shield/main/nodejs-v2/scripts";
+  "https://raw.githubusercontent.com/pierremndg/PII-Shield-FR/main/nodejs-v2/scripts";
 const RELEASE_SCRIPT_BASE =
-  `https://github.com/gregmos/PII-Shield/releases/download/v${VERSION}`;
-const MODEL_EXPECTED_PATH = "~/.pii_shield/models/gliner-pii-base-v1.0/";
+  `https://github.com/pierremndg/PII-Shield-FR/releases/download/v${VERSION}`;
+const MODEL_EXPECTED_PATH = "~/.pii_shield/models/gliner_multi_pii-v1/";
 
 function renderNeedsSetupEnvelope(): string {
   // v2.1: primary install path is the in-chat MCP Apps setup panel — Claude
@@ -544,7 +545,7 @@ function renderNeedsSetupEnvelope(): string {
     `iwr ${INSTALL_SCRIPT_RAW_BASE}/install-model.ps1 | iex`;
   const oneLinerUnix =
     `curl -fsSL ${INSTALL_SCRIPT_RAW_BASE}/install-model.sh | bash`;
-  const modelZipUrl = `${RELEASE_SCRIPT_BASE}/gliner-pii-base-v1.0.zip`;
+  const modelZipUrl = `${RELEASE_SCRIPT_BASE}/gliner_multi_pii-v1.zip`;
   return JSON.stringify({
     status: "loading",
     phase: "needs_setup",
@@ -565,13 +566,13 @@ function renderNeedsSetupEnvelope(): string {
         mac_linux: `${RELEASE_SCRIPT_BASE}/install-model.sh`,
       },
       expected_path: MODEL_EXPECTED_PATH,
-      model_size_mb: 634,
+      model_size_mb: 935,
       searched_paths: getNeedsSetupSearched(),
     },
     user_message:
-      "PII Shield needs its GLiNER model (one-time, ~634 MB). I'll open the in-chat install panel where you can click Download (browser does the download) and then Install (PII Shield finds and unpacks the ZIP automatically).",
+      "PII Shield needs its GLiNER model (one-time, ~935 MB (892 MiB)). I'll open the in-chat install panel where you can click Download (browser does the download) and then Install (PII Shield finds and unpacks the ZIP automatically).",
     display_instruction:
-      "Call `start_model_setup` to open the in-chat install panel. The user clicks Download (their browser handles the 634 MB file) then Install (the server auto-detects the ZIP in Downloads / OneDrive / Desktop and unpacks it into ~/.pii_shield/models/). " +
+      "Call `start_model_setup` to open the in-chat install panel. The user clicks Download (their browser handles the 935 MB (892 MiB) file) then Install (the server auto-detects the ZIP in Downloads / OneDrive / Desktop and unpacks it into ~/.pii_shield/models/). " +
       "If MCP Apps panels aren't supported by this host, fall back to printing `setup_instructions.one_liner_windows` or `one_liner_mac_linux` for the user to paste into a terminal.",
   }, null, 2);
 }
@@ -679,6 +680,8 @@ async function handleListEntities(_args: ToolArgs): Promise<string> {
     recent_sessions: latest ? [latest] : [],
     data_dir: PATHS.DATA_DIR,
     data_dir_source: getDataDirSource(),
+    // What is really running: the NER model and the French rules (shown in the review panel header too).
+    pii_profil: { modele: MODEL_SLUG, regles_francaises: true },
   }, null, 2);
 
   if (!ready && nerStatus.phase === "error") {
@@ -715,7 +718,7 @@ async function handleListEntities(_args: ToolArgs): Promise<string> {
       firstRunNotice =
         "⏳ **First-run setup** — PII Shield is installing runtime dependencies " +
         "(onnxruntime-node, @xenova/transformers, gliner). This takes about 1–2 " +
-        "minutes, once. The GLiNER NER model (~634 MB) was pre-installed by the " +
+        "minutes, once. The GLiNER NER model (~935 MB (892 MiB)) was pre-installed by the " +
         "install-model script into ~/.pii_shield/models/ — no download at this stage. " +
         `Runtime deps cache: \`${dataDir}\`. Subsequent runs will be instant.`;
     }
@@ -1403,6 +1406,7 @@ async function handleApplyReviewOverrides(args: ToolArgs): Promise<string> {
   const overrides = (args.overrides as {
     remove?: number[];
     add?: Array<{ text: string; type: string; start?: number; end?: number }>;
+    merge?: Array<{ type: string; from: string; to: string }>;
   }) || { remove: [], add: [] };
 
   const review = getReview(sessionId);
@@ -1466,6 +1470,7 @@ async function handleApplyReviewOverrides(args: ToolArgs): Promise<string> {
   const overridesForReview: ReviewOverrides = {
     remove: overrides.remove || [],
     add: normalisedAdd,
+    merge: overrides.merge || [],
   };
   target.overrides = overridesForReview;
   target.approved = true;
@@ -2040,7 +2045,7 @@ async function handleStartModelSetup(_args: ToolArgs): Promise<{
     status: "setup_ready",
     ner_phase: ner.phase,
     ner_ready: ner.ready,
-    model_zip_url: `${RELEASE_SCRIPT_BASE}/gliner-pii-base-v1.0.zip`,
+    model_zip_url: `${RELEASE_SCRIPT_BASE}/gliner_multi_pii-v1.zip`,
     marker_name: ".pii_shield_model_here",
     expected_path: MODEL_EXPECTED_PATH,
   };
@@ -2056,7 +2061,7 @@ registerAppTool(server,
     title: "Open model install panel",
     description:
       "Open the in-chat install panel for the GLiNER model. The panel renders directly in the chat (MCP Apps io.modelcontextprotocol/ui extension) and shows two buttons: " +
-      "Download (host opens the model release URL in the user's default browser, so the browser handles the 634 MB transfer instead of an unsigned Node child process) and " +
+      "Download (host opens the model release URL in the user's default browser, so the browser handles the 935 MB (892 MiB) transfer instead of an unsigned Node child process) and " +
       "Install (server scans Downloads / OneDrive / Desktop / etc. for the saved ZIP, validates, atomic-extracts into ~/.pii_shield/models/, re-inits NER). " +
       "Call this tool when list_entities returns phase: 'needs_setup'.",
     inputSchema: {},
@@ -2163,7 +2168,7 @@ async function handleInstallModelFromDownload(_args: ToolArgs): Promise<string> 
 server.registerTool("install_model_from_download", {
   title: "Install GLiNER model from a downloaded ZIP",
   description:
-    "Find the gliner-pii-base-v1.0(*).zip the user downloaded via their browser, " +
+    "Find the gliner_multi_pii-v1(*).zip the user downloaded via their browser, " +
     "validate it, atomically install it into ~/.pii_shield/models/, and re-init NER. " +
     "Searches ~/Downloads, OneDrive variants, Desktop, Documents, configured dirs, " +
     "and the cross-platform marker BFS. Called by the in-chat setup panel " +

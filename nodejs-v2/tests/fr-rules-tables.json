@@ -1,0 +1,752 @@
+[
+ {
+  "nom": "fr_tbl_org_cabinet_avocats",
+  "source": "(?<!\\p{L})[Cc]abinet d['’]avocats(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cabinet_comptable",
+  "source": "(?<!\\p{L})[Cc]abinet (?:d['’]expertise comptable|comptable)(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_etude_notariale",
+  "source": "(?<!\\p{L})(?:[ÉE]tude notariale|Office notarial)(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_etude_huissiers",
+  "source": "(?<!\\p{L})(?:[ÉE]tude|Office) d['’]huissiers(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_etude_avoues",
+  "source": "(?<!\\p{L})[ÉE]tude d['’]avou[ée]s(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cabinet_medical",
+  "source": "(?<!\\p{L})[Cc]abinet m[ée]dical(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cabinet_dentaire",
+  "source": "(?<!\\p{L})[Cc]abinet dentaire(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cabinet_veterinaire",
+  "source": "(?<!\\p{L})[Cc]abinet v[ée]t[ée]rinaire(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cabinet_kinesitherapie",
+  "source": "(?<!\\p{L})[Cc]abinet de kin[ée]sith[ée]rapie(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cabinet_radiologie",
+  "source": "(?<!\\p{L})[Cc]abinet de radiologie(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cabinet_infirmiers",
+  "source": "(?<!\\p{L})[Cc]abinet d['’]infirmiers?(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cabinet_orthodontie",
+  "source": "(?<!\\p{L})[Cc]abinet d['’]orthodontie(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cabinet",
+  "source": "(?<!\\p{L})(?:[Cc]abinet|CABINET)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_clinique_veterinaire",
+  "source": "(?<!\\p{L})[Cc]linique v[ée]t[ée]rinaire(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_clinique",
+  "source": "(?<!\\p{L})(?:[Cc]linique|[Pp]olyclinique)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_hopital",
+  "source": "(?<!\\p{L})(?:[Hh]ôpital|[Cc]entre hospitalier(?! universitaire))(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_centre_sante",
+  "source": "(?<!\\p{L})[Cc]entre (?:de santé|de soins|m[ée]dical)(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_centre_imagerie",
+  "source": "(?<!\\p{L})[Cc]entre (?:d['’]imagerie|de radiologie)(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_centre_dialyse",
+  "source": "(?<!\\p{L})[Cc]entre de dialyse(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_centre_reeducation",
+  "source": "(?<!\\p{L})[Cc]entre de r[ée][ée]ducation(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_centre_dentaire",
+  "source": "(?<!\\p{L})[Cc]entre dentaire(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_centre_formation",
+  "source": "(?<!\\p{L})[Cc]entre de formation(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_maison_sante",
+  "source": "(?<!\\p{L})[Mm]aison de sant[ée](?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_ehpad",
+  "source": "(?<!\\p{L})(?:EHPAD|[Mm]aison de retraite|[ÉE]tablissement d['’]hébergement pour personnes âgées dépendantes)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_pharmacie",
+  "source": "(?<!\\p{L})[Pp]harmacie(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_laboratoire",
+  "source": "(?<!\\p{L})[Ll]aboratoire(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_esat",
+  "source": "(?<!\\p{L})(?:ESAT|Établissement et service d['’]aide par le travail)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_ime",
+  "source": "(?<!\\p{L})(?:IME|Institut médico-éducatif)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_sessad",
+  "source": "(?<!\\p{L})(?:SESSAD|Service d['’]éducation spéciale et de soins à domicile)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_ssiad",
+  "source": "(?<!\\p{L})(?:SSIAD|Service de soins infirmiers à domicile)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_samsah",
+  "source": "(?<!\\p{L})(?:SAMSAH|Service d['’]accompagnement médico-social pour adultes handicapés)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_camsp",
+  "source": "(?<!\\p{L})(?:CAMSP|Centre d['’]action médico-sociale précoce)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cmpp",
+  "source": "(?<!\\p{L})(?:CMPP|Centre médico-psycho-pédagogique)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_itep",
+  "source": "(?<!\\p{L})(?:ITEP|Institut thérapeutique, éducatif et pédagogique)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_mas",
+  "source": "(?<!\\p{L})(?:MAS|Maison d['’]accueil spécialisée)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_fam",
+  "source": "(?<!\\p{L})(?:FAM|Foyer d['’]accueil médicalisé)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_ssr",
+  "source": "(?<!\\p{L})(?:SSR|Soins de suite et de réadaptation)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_ecole_superieure",
+  "source": "(?<!\\p{L})[EÉé]cole sup[ée]rieure(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_ecole",
+  "source": "(?<!\\p{L})[EÉé]cole(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_college",
+  "source": "(?<!\\p{L})[Cc]ollège(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_lycee",
+  "source": "(?<!\\p{L})[Ll]ycée(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_universite",
+  "source": "(?<!\\p{L})[Uu]niversité(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_iut",
+  "source": "(?<!\\p{L})(?:IUT|Institut universitaire de technologie)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_institut",
+  "source": "(?<!\\p{L})[Ii]nstitut(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cfa",
+  "source": "(?<!\\p{L})(?:CFA|Centre de formation d['’]apprentis)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_greta",
+  "source": "(?<!\\p{L})(?:GRETA|Groupement d['’]établissements)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_organisme_formation",
+  "source": "(?<!\\p{L})[Oo]rganisme de formation(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_creche",
+  "source": "(?<!\\p{L})[Cc]rèche(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_prevoyance",
+  "source": "(?<!\\p{L})[Ii]nstitution de pr[ée]voyance(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_mutuelle",
+  "source": "(?<!\\p{L})[Mm]utuelle(?!\\p{L})(?!\\s*(?:de|du|des|la|le)\\s+(?:Ville|Ventes|Dieu|Justice|France|Paix|Paris|Scolaire)(?!\\p{L}))(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_assurance",
+  "source": "(?<!\\p{L})[Aa]ssurances?(?! Maladie)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_banque",
+  "source": "(?<!\\p{L})[Bb]anque(?!\\p{L})(?!\\s*(?:de|du|des|la|le)\\s+(?:Ville|Ventes|Dieu|Justice|France|Paix|Paris|Scolaire)(?!\\p{L}))(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_holding",
+  "source": "(?<!\\p{L})[Hh]olding(?!\\p{L})(?!\\s*(?:de|du|des|la|le)\\s+(?:Ville|Ventes|Dieu|Justice|France|Paix|Paris|Scolaire)(?!\\p{L}))(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_fonds_dotation",
+  "source": "(?<!\\p{L})[Ff]onds de dotation(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_sicav",
+  "source": "(?<!\\p{L})SICAV(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_fcpr",
+  "source": "(?<!\\p{L})FCPR(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_fcp",
+  "source": "(?<!\\p{L})FCP(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_fpci",
+  "source": "(?<!\\p{L})FPCI(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_opci",
+  "source": "(?<!\\p{L})OPCI(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_scpi",
+  "source": "(?<!\\p{L})SCPI(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_garage",
+  "source": "(?<!\\p{L})[Gg]arage(?!\\p{L})(?!\\s*(?:de|du|des|la|le)\\s+(?:Ville|Ventes|Dieu|Justice|France|Paix|Paris|Scolaire)(?!\\p{L}))(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_restaurant",
+  "source": "(?<!\\p{L})[Rr]estaurant(?!\\p{L})(?!\\s*(?:de|du|des|la|le)\\s+(?:Ville|Ventes|Dieu|Justice|France|Paix|Paris|Scolaire)(?!\\p{L}))(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_brasserie",
+  "source": "(?<!\\p{L})[Bb]rasserie(?!\\p{L})(?!\\s*(?:de|du|des|la|le)\\s+(?:Ville|Ventes|Dieu|Justice|France|Paix|Paris|Scolaire)(?!\\p{L}))(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_pizzeria",
+  "source": "(?<!\\p{L})[Pp]izzeria(?!\\p{L})(?!\\s*(?:de|du|des|la|le)\\s+(?:Ville|Ventes|Dieu|Justice|France|Paix|Paris|Scolaire)(?!\\p{L}))(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_boulangerie",
+  "source": "(?<!\\p{L})[Bb]oulangerie(?!\\p{L})(?!\\s*(?:de|du|des|la|le)\\s+(?:Ville|Ventes|Dieu|Justice|France|Paix|Paris|Scolaire)(?!\\p{L}))(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_boucherie",
+  "source": "(?<!\\p{L})[Bb]oucherie(?!\\p{L})(?!\\s*(?:de|du|des|la|le)\\s+(?:Ville|Ventes|Dieu|Justice|France|Paix|Paris|Scolaire)(?!\\p{L}))(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_hotel",
+  "source": "(?<!\\p{L})[Hh]ôtel(?!\\p{L})(?!\\s*(?:de|du|des|la|le)\\s+(?:Ville|Ventes|Dieu|Justice|France|Paix|Paris|Scolaire)(?!\\p{L}))(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_etablissements",
+  "source": "(?<!\\p{L})(?:Établissements|Ets|Éts)(?!\\p{L})(?!\\s*(?:de|du|des|la|le)\\s+(?:Ville|Ventes|Dieu|Justice|France|Paix|Paris|Scolaire)(?!\\p{L}))(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_association_diocesaine",
+  "source": "(?<!\\p{L})[Aa]ssociation diocésaine(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_association",
+  "source": "(?<!\\p{L})[Aa]ssociation(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_fondation",
+  "source": "(?<!\\p{L})[Ff]ondation(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_syndic_copropriete",
+  "source": "(?<!\\p{L})[Ss]yndicat des copropri[ée]taires(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_congregation",
+  "source": "(?<!\\p{L})[Cc]ongrégation(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_section_syndicale",
+  "source": "(?<!\\p{L})[Ss]ection syndicale(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_syndicat",
+  "source": "(?<!\\p{L})[Ss]yndicat(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_union_syndicale",
+  "source": "(?<!\\p{L})(?:[Uu]nion (?:locale|départementale)|CGT|CFDT|CFE-CGC|CFTC|UNSA|SUD|Solidaires)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cse",
+  "source": "(?<!\\p{L})(?:CSE|[Cc]omit[ée] social et [ée]conomique)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_ordre",
+  "source": "(?<!\\p{L})[Oo]rdre (?:des |du |de |d['’])(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_paroisse",
+  "source": "(?<!\\p{L})[Pp]aroisse(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_diocese",
+  "source": "(?<!\\p{L})[Dd]iocèse(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_consistoire",
+  "source": "(?<!\\p{L})[Cc]onsistoire(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_mosquee",
+  "source": "(?<!\\p{L})[Mm]osquée(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_synagogue",
+  "source": "(?<!\\p{L})[Ss]ynagogue(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_eglise",
+  "source": "(?<!\\p{L})[ÉEé]glise(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_mairie",
+  "source": "(?<!\\p{L})[Mm]airie(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_prefecture",
+  "source": "(?<!\\p{L})[Pp]réfecture(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_ministere",
+  "source": "(?<!\\p{L})[Mm]inistère(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_conseil_departemental",
+  "source": "(?<!\\p{L})[Cc]onseil départemental(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_conseil_regional",
+  "source": "(?<!\\p{L})[Cc]onseil régional(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_tresor_public",
+  "source": "(?<!\\p{L})[Tt]résor [Pp]ublic(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cour_cassation",
+  "source": "(?<!\\p{L})[Cc]our de cassation(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cour_appel",
+  "source": "(?<!\\p{L})[Cc]our d['’]appel(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cour_admin_appel",
+  "source": "(?<!\\p{L})[Cc]our administrative(?: d['’]appel)?(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cour_assises",
+  "source": "(?<!\\p{L})[Cc]our d['’]assises(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cour_comptes",
+  "source": "(?<!\\p{L})[Cc]our des comptes(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cour_asile",
+  "source": "(?<!\\p{L})[Cc]our nationale du droit d['’]asile(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cour_justice_republique",
+  "source": "(?<!\\p{L})[Cc]our de justice de la [Rr][ée]publique(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_tribunal_judiciaire",
+  "source": "(?<!\\p{L})[Tt]ribunal [Jj]udiciaire(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_tribunal_commerce",
+  "source": "(?<!\\p{L})[Tt]ribunal de commerce(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_tribunal_administratif",
+  "source": "(?<!\\p{L})[Tt]ribunal administratif(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_tribunal_proximite",
+  "source": "(?<!\\p{L})[Tt]ribunal de proximité(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_tribunal_police",
+  "source": "(?<!\\p{L})[Tt]ribunal de police(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_tribunal_correctionnel",
+  "source": "(?<!\\p{L})[Tt]ribunal correctionnel(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_tribunal_enfants",
+  "source": "(?<!\\p{L})[Tt]ribunal pour enfants(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_tribunal_baux_ruraux",
+  "source": "(?<!\\p{L})[Tt]ribunal paritaire des baux ruraux(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_tribunal_securite_sociale",
+  "source": "(?<!\\p{L})[Tt]ribunal des affaires de sécurité sociale(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_tribunal_conflits",
+  "source": "(?<!\\p{L})[Tt]ribunal des conflits(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_tribunal_instance",
+  "source": "(?<!\\p{L})[Tt]ribunal d['’]instance(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_tribunal_grande_instance",
+  "source": "(?<!\\p{L})[Tt]ribunal de grande instance(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_tribunal",
+  "source": "(?<!\\p{L})[Tt]ribunal(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_conseil_prud_hommes",
+  "source": "(?<!\\p{L})[Cc]onseil (?:de|des) prud['’]hommes(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_conseil_etat",
+  "source": "(?<!\\p{L})[Cc]onseil d['’][ÉE]tat(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_conseil_constitutionnel",
+  "source": "(?<!\\p{L})[Cc]onseil constitutionnel(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cour",
+  "source": "(?<!\\p{L})[Cc]our(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_chu",
+  "source": "(?<!\\p{L})(?:C\\.?H\\.?U\\.?|Centre hospitalier universitaire)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cpam",
+  "source": "(?<!\\p{L})(?:CPAM|Caisse primaire d['’]assurance maladie)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_urssaf",
+  "source": "(?<!\\p{L})(?:URSSAF|Union de recouvrement des cotisations de sécurité sociale et d['’]allocations familiales)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_caisse",
+  "source": "(?<!\\p{L})Caisse (?:primaire|nationale|d['’]allocations|d['’]assurance maladie)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_crous",
+  "source": "(?<!\\p{L})(?:CROUS|Centre régional des œuvres universitaires et scolaires)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_sarl",
+  "source": "(?<!\\p{L})(?:Société à responsabilité limitée|Entreprise unipersonnelle à responsabilité limitée)(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_sas",
+  "source": "(?<!\\p{L})Société par actions simplifiée(?: unipersonnelle)?(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_sci",
+  "source": "(?<!\\p{L})Société civile immobilière(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_selarl",
+  "source": "(?<!\\p{L})Société d['’]exercice libéral à responsabilité limitée(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_snc",
+  "source": "(?<!\\p{L})Société en nom collectif(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_sa",
+  "source": "(?<!\\p{L})Société anonyme(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_societe",
+  "source": "(?<!\\p{L})La Poste(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_societe",
+  "source": "(?<!\\p{L})[Gg]roupe(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_societe",
+  "source": "(?<!\\p{L})[Cc]ompagnie(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_sccv",
+  "source": "(?<!\\p{L})SCCV(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_scm",
+  "source": "(?<!\\p{L})SCM(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_scea",
+  "source": "(?<!\\p{L})SCEA(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_earl",
+  "source": "(?<!\\p{L})EARL(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_gaec",
+  "source": "(?<!\\p{L})GAEC(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_geie",
+  "source": "(?<!\\p{L})GEIE(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_gie",
+  "source": "(?<!\\p{L})GIE(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_gfa",
+  "source": "(?<!\\p{L})GFA(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_cuma",
+  "source": "(?<!\\p{L})CUMA(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_sica",
+  "source": "(?<!\\p{L})SICA(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_sisa",
+  "source": "(?<!\\p{L})SISA(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_scop",
+  "source": "(?<!\\p{L})SCOP(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_scic",
+  "source": "(?<!\\p{L})SCIC(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_sci",
+  "source": "(?<!\\p{L})SCI(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_selarl",
+  "source": "(?<!\\p{L})SELARL(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_selafa",
+  "source": "(?<!\\p{L})SELAFA(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_selca",
+  "source": "(?<!\\p{L})SELCA(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_selas",
+  "source": "(?<!\\p{L})SELAS(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_spfpl",
+  "source": "(?<!\\p{L})SPFPL(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_asl",
+  "source": "(?<!\\p{L})ASL(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_afu",
+  "source": "(?<!\\p{L})AFU(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ },
+ {
+  "nom": "fr_tbl_org_asa",
+  "source": "(?<!\\p{L})ASA(?!\\p{L})(?:(?:[ \\t]+|(?<=['’]))(?:de|du|des|pour|la|le|les|d|l|entreprise|soci[ée]t[ée]|[ée]tablissement|groupe|site|copropri[ée]taires)(?!\\p{L})|['’])*[ \\t]*(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*(?:[ \\t]+(?:(?:la|le|les|pour|de|du|des|et|&)[ \\t]+|(?:l|d)['’])*[\\p{Lu}][\\p{L}'’&-]*){0,6}",
+  "flags": "gu"
+ }
+]

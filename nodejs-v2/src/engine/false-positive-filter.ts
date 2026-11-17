@@ -327,9 +327,50 @@ function isJurisdictionContext(entity: DetectedEntity, text: string, allEntities
   return false;
 }
 
-/** Remove entities that are in jurisdiction context (for use after propagation) */
+// French court name ("Tribunal de commerce de Rennes", "Conseil des prud'hommes de Lyon", "Cour d'appel de Paris").
+// By default it is not masked; the user can choose to mask it (setting PII_MASK_COURTS=true, "Mask court names" in the
+// extension settings). Either way the city that follows is masked: it is a separate LOCATION entity this filter does not
+// remove. The name must start with the court word as a whole word ("Tribunaux", "Courtage" do not count).
+const FR_COURT_NAME_RE = /^(?:tribunal|cour|conseil d['’][ée]tat|conseil constitutionnel|conseil (?:de|des) prud['’]hommes)(?!\p{L})/iu;
+
+export function isFrenchCourtName(entity: DetectedEntity): boolean {
+  // ORG_* are the organization sub-types given by the French table rules (ORG_TRIBUNAL_COMMERCE…) before this filter runs.
+  return (entity.type === "ORGANIZATION" || entity.type.startsWith("ORG_")) && FR_COURT_NAME_RE.test(entity.text.trim());
+}
+
+// The city at the end of a court name: "…de Rennes", "…d'Aix-en-Provence". "Conseil d'État" has none.
+const COURT_CITY_RE = /(?:^|\s)(?:de|du|des|d['’])\s*(\p{Lu}[\p{L}'’]*(?:[ -](?:(?:en|sur|sous|lès|le|la|les|de|du|des)[ -])*\p{Lu}[\p{L}'’]*)*)$/u;
+
+/** The city entity at the end of a court name, or null. The court name is dropped; this city stays masked. */
+export function courtCity(court: DetectedEntity): DetectedEntity | null {
+  const name = court.text.trimEnd();
+  if (/^conseil d['’][ée]tat/i.test(name)) return null;
+  const m = name.match(COURT_CITY_RE);
+  if (!m) return null;
+  const start = court.start + name.length - m[1].length;
+  return { text: m[1], type: "VILLE", start, end: start + m[1].length, score: court.score, verified: true, reason: "pattern:fr_court_city" };
+}
+
+/**
+ * Remove entities that are in jurisdiction context (for use after propagation).
+ * French court names are removed too, unless the user chose to mask them (PII_MASK_COURTS=true):
+ * then they are kept and go through masking like any organisation. Read at each call, so the setting can change.
+ */
 export function filterJurisdictionEntities(entities: DetectedEntity[], text: string): DetectedEntity[] {
-  return entities.filter((e) => !isJurisdictionContext(e, text));
+  const maskCourts = (process.env.PII_MASK_COURTS || "").trim().toLowerCase() === "true";
+  const cities: DetectedEntity[] = [];
+  const kept = entities.filter((e) => {
+    if (isFrenchCourtName(e)) {
+      if (maskCourts) return true;
+      // The court is not masked but its city is. The French rules cover the whole court name, so the city may
+      // not exist as its own entity: give it back, unless another detection already covers it.
+      const city = courtCity(e);
+      if (city && !entities.some((o) => o !== e && o.start < city.end && city.start < o.end)) cities.push(city);
+      return false;
+    }
+    return !isJurisdictionContext(e, text);
+  });
+  return cities.length ? [...kept, ...cities] : kept;
 }
 
 // ── Currency context — "Indian Rupees", "US Dollars" etc. are NOT PII ──────

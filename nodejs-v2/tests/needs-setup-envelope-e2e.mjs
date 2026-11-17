@@ -27,8 +27,8 @@ if (!fs.existsSync(BUNDLE)) {
   console.error(`Missing ${BUNDLE}. Run 'npm run build' first.`);
   process.exit(1);
 }
-if (!fs.existsSync(path.join(DEV_CACHE, "gliner-pii-base-v1.0", "model.onnx"))) {
-  console.error(`Missing model in dev cache at ${DEV_CACHE}/gliner-pii-base-v1.0/model.onnx`);
+if (!fs.existsSync(path.join(DEV_CACHE, "gliner_multi_pii-v1", "model.onnx"))) {
+  console.error(`Missing model in dev cache at ${DEV_CACHE}/gliner_multi_pii-v1/model.onnx`);
   process.exit(1);
 }
 
@@ -105,7 +105,7 @@ async function main() {
     "Unix one-liner uses curl");
   check(Array.isArray(r1.setup_instructions?.searched_paths) && r1.setup_instructions.searched_paths.length >= 2,
     `searched_paths ≥ 2 (got: ${r1.setup_instructions?.searched_paths?.length})`);
-  check(r1.setup_instructions?.expected_path === "~/.pii_shield/models/gliner-pii-base-v1.0/",
+  check(r1.setup_instructions?.expected_path === "~/.pii_shield/models/gliner_multi_pii-v1/",
     "expected_path points to ~/.pii_shield/models/");
 
   srv1.proc.kill();

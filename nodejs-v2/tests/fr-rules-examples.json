@@ -1,0 +1,340 @@
+[
+ {
+  "nom": "fr_forme_prefixe",
+  "type": "ORGANIZATION",
+  "oui": [
+   "SARL Atelier Fictif",
+   "SAS Client Fictif",
+   "SASU Groupe Test Fictif",
+   "SARL Atelier de Lyon a signé",
+   "SARL Dupuis, gérant",
+   "SARL Dupuis."
+  ],
+  "non": [
+   "SARL Office notarial",
+   "SARL a reçu les fonds",
+   "SARL Dupuis a signé",
+   "SARL Office notarial Lenoir"
+  ],
+  "exact": {}
+ },
+ {
+  "nom": "fr_adresse",
+  "type": "ADRESSE",
+  "oui": [
+   "12 rue Imaginaire, 75000 Paris",
+   "3 bis avenue de la République",
+   "14 impasse des Acacias\n69003 Lyon"
+  ],
+  "non": [
+   "Le 3 mars 2026",
+   "la rue est calme"
+  ],
+  "exact": {
+   "14 impasse des Acacias\n69003 Lyon\nTél.": "14 impasse des Acacias\n69003 Lyon"
+  }
+ },
+ {
+  "nom": "fr_ville",
+  "type": "VILLE",
+  "oui": [
+   "né le 03/07/1979 à Lille",
+   "Fait à Lyon, le 4 mai"
+  ],
+  "non": [
+   "Le 3 mars 2026",
+   "la ville est calme",
+   "Bellegarde Conseil a un siège",
+   "Lyon Services"
+  ],
+  "exact": {}
+ },
+ {
+  "nom": "fr_region",
+  "type": "REGION",
+  "oui": [
+   "en région Bretagne",
+   "Auvergne-Rhône-Alpes"
+  ],
+  "non": [
+   "Le 3 mars 2026"
+  ],
+  "exact": {}
+ },
+ {
+  "nom": "fr_departement",
+  "type": "DEPARTEMENT",
+  "oui": [
+   "dans le Rhône",
+   "département de la Loire"
+  ],
+  "non": [
+   "Le 3 mars 2026"
+  ],
+  "exact": {}
+ },
+ {
+  "nom": "fr_nom_civilite",
+  "type": "PERSON",
+  "oui": [
+   "M. Jean Exemplaire",
+   "Mme Claire Durand-Fictive",
+   "Monsieur Paul Dupont"
+  ],
+  "non": [
+   "M. le juge",
+   "Mme Cabinet Exemple",
+   "M. Tribunal Judiciaire",
+   "Monsieur Le Maire",
+   "Madame La Présidente"
+  ],
+  "exact": {
+   "Cher Monsieur Fabre,": "Fabre"
+  }
+ },
+ {
+  "nom": "fr_nom_indice",
+  "type": "PERSON",
+  "oui": [
+   "Le client, Jean Exemplaire, né",
+   "le témoin Claire Durand"
+  ],
+  "non": [
+   "client Fictif SAS",
+   "le client Société Exemple"
+  ],
+  "exact": {}
+ },
+ {
+  "nom": "fr_lieu_naissance",
+  "type": "LOCATION",
+  "oui": [
+   "né le 15/01/1985 à Nantes",
+   "née le 02/02/1990 à Saint Denis",
+   "Né le 22/09/1992 à Montpellier",
+   "date de naissance enregistrée est le 03/07/1979, à Lille",
+   "née le 1er mars 1980 à Brest"
+  ],
+  "non": [
+   "né le 15/01/1985",
+   "la ville de Nantes",
+   "le 3 mars 2026 à Paris"
+  ],
+  "exact": {
+   "date de naissance enregistrée est le 03/07/1979, à Lille.": "Lille"
+  }
+ },
+ {
+  "nom": "fr_nom_magistrat",
+  "type": "PERSON",
+  "oui": [
+   "M. le juge Antoine Exemplar",
+   "Mme la juge Claire Fictive"
+  ],
+  "non": [
+   "M. le juge rend",
+   "le juge Tribunal"
+  ],
+  "exact": {}
+ },
+ {
+  "nom": "fr_initiale_nom",
+  "type": "PERSON",
+  "oui": [
+   "J. Exemplaire a signé",
+   "D. Durand"
+  ],
+  "non": [
+   "Cf. Nantes",
+   "A. Tribunal",
+   "M. Dupont"
+  ],
+  "exact": {
+   "J. Exemplaire a signé": "J. Exemplaire"
+  }
+ },
+ {
+  "nom": "fr_naissance_date",
+  "type": "DATE_NAISSANCE",
+  "oui": [
+   "né le 15/01/1985",
+   "née le 02/02/1990",
+   "Né le 22/09/1992 à Montpellier",
+   "Date de naissance : 15.01.1985",
+   "Votre date de naissance enregistrée est le 03/07/1979, à Lille.",
+   "née le 1er mars 1980"
+  ],
+  "non": [
+   "le 3 mars 2026",
+   "la date du 04/03/2026",
+   "contrairement à la date de naissance du client.\n\nFait à Paris, le 4 mars 2026."
+  ],
+  "exact": {
+   "Né le 22/09/1992 à Montpellier": "22/09/1992",
+   "née le 1er mars 1980 à Brest": "1er mars 1980"
+  }
+ },
+ {
+  "nom": "fr_praticien",
+  "type": "PERSON",
+  "oui": [
+   "Dr A. RIVIÈRE",
+   "Docteur Jean DUPONT",
+   "Pr MARTIN",
+   "Me Sophie LEROY",
+   "Maître Paul DURAND",
+   "Dr Dupont",
+   "Maître Durand",
+   "Me Martin",
+   "Docteur Jean Dupont",
+   "le docteur Martin FAUX",
+   "le dr Léa Testeuse",
+   "Dr Anne-Laure Roussel"
+  ],
+  "non": [
+   "Me dire bonjour",
+   "le docteur rivière",
+   "Thème DUPONT",
+   "Dr. dupont"
+  ],
+  "exact": {
+   "Maître Durand a plaidé": "Durand",
+   "Docteur Jean Dupont a examiné": "Jean Dupont",
+   "Maître Paul DURAND.": "Paul DURAND"
+  }
+ },
+ {
+  "nom": "fr_organisation",
+  "type": "ORGANIZATION",
+  "oui": [
+   "CABINET EXEMPLE & ASSOCIÉS",
+   "Cabinet Exemple & Associés",
+   "Office Lenoir & Associés",
+   "Étude Martin et Associés",
+   "Lenoir & Associés",
+   "Atelier Fictif SARL",
+   "Client Fictif SAS",
+   "Groupe Test SASU",
+   "Étoile Conseil SARL"
+  ],
+  "non": [
+   "Tribunal Judiciaire de Paris",
+   "Client Fictif",
+   "le cabinet reste ouvert",
+   "Maison Exemple Conseil",
+   "la société Atelier",
+   "La SARL a reçu les fonds"
+  ],
+  "exact": {
+   "la société Atelier Fictif SARL, SIREN": "Atelier Fictif SARL",
+   "CABINET EXEMPLE & ASSOCIÉS, 12 rue": "CABINET EXEMPLE & ASSOCIÉS",
+   "contrat avec Office Lenoir & Associés, représenté": "Office Lenoir & Associés",
+   "SIREN de la société Client Fictif SAS :": "Client Fictif SAS",
+   "la société Étoile Conseil SARL, dont": "Étoile Conseil SARL"
+  }
+ },
+ {
+  "nom": "fr_declencheur",
+  "type": "ORGANIZATION",
+  "oui": [
+   "dénommée SOCIETE DE BANQUE ET D'INVESTISSEMENT SA",
+   "exerçant sous l'enseigne Boulangerie Dupont",
+   "sous la dénomination sociale Atelier Fictif",
+   "nom commercial Maison Blanche"
+  ],
+  "non": [
+   "dénommé Monsieur Martin Dupont",
+   "dénommée la Société Fictive",
+   "sous la dénomination générale"
+  ],
+  "exact": {
+   "dénommée SOCIETE DE BANQUE": "SOCIETE DE BANQUE"
+  }
+ },
+ {
+  "nom": "fr_indice_societe",
+  "type": "ORGANIZATION",
+  "oui": [
+   "SIRET de la société Fournisseur Fictif : 356",
+   "l'entreprise Dupuis Frères a livré",
+   "sous l'enseigne Atelier Fictif",
+   "la filiale Test Conseil"
+  ],
+  "non": [
+   "la société a reçu les fonds",
+   "la Société Générale",
+   "la société Anonyme",
+   "la société Client",
+   "la société Monsieur Martin",
+   "la société, Dupont"
+  ],
+  "exact": {
+   "SIRET de la société Fournisseur Fictif : 356": "Fournisseur Fictif",
+   "l'entreprise Dupuis Frères a livré": "Dupuis Frères"
+  }
+ },
+ {
+  "nom": "fr_indice_contrat",
+  "type": "ORGANIZATION",
+  "oui": [
+   "notifiée à Maison Exemple Conseil, réf.",
+   "contrat avec Fournisseur Fictif pour",
+   "conclu avec Atelier du Nord le"
+  ],
+  "non": [
+   "notifiée à Paris",
+   "notifiée à Monsieur Martin Dupont",
+   "contrat avec le client",
+   "auprès de Madame Lefèvre Anne",
+   "notifiée à Tribunal Judiciaire de Lyon"
+  ],
+  "exact": {
+   "notifiée à Maison Exemple Conseil, réf.": "Maison Exemple Conseil",
+   "conclu avec Atelier du Nord le": "Atelier du Nord"
+  }
+ },
+ {
+  "nom": "fr_marque_bancaire",
+  "type": "ORGANIZATION",
+  "oui": [
+   "Crédit Agricole Nord-Est",
+   "AXA France IARD",
+   "Banque Populaire Atlantique",
+   "Société Générale",
+   "Caisse d'Épargne Île-de-France"
+  ],
+  "non": [
+   "crédit agricole",
+   "la banque postale"
+  ],
+  "exact": {}
+ },
+ {
+  "nom": "fr_sigle_suffixe",
+  "type": "ORGANIZATION",
+  "oui": [
+   "Atelier Fictif SA",
+   "SOCIETE GENERALE SA",
+   "Groupe Test S.A."
+  ],
+  "non": [
+   "il se rend",
+   "Atelier Fictif sa",
+   "Client Fictif"
+  ],
+  "exact": {}
+ },
+ {
+  "nom": "fr_droits",
+  "type": "ORGANIZATION",
+  "oui": [
+   "venant aux droits de la Société Fictive",
+   "en qualité d'assureur de Atelier Fictif"
+  ],
+  "non": [
+   "venant aux droits de son client",
+   "prise en la personne de son représentant légal"
+  ],
+  "exact": {}
+ }
+]

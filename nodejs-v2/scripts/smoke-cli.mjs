@@ -128,8 +128,8 @@ if (!fs.existsSync(out1) || !fs.existsSync(out3)) {
 }
 const out1Text = fs.readFileSync(out1, "utf8");
 const out3Text = fs.readFileSync(out3, "utf8");
-const ssnPlaceholder1 = out1Text.match(/<US_SSN_\d+\w*>/)?.[0];
-const ssnPlaceholder3 = out3Text.match(/<US_SSN_\d+\w*>/)?.[0];
+const ssnPlaceholder1 = out1Text.match(/<NUMERO_SECU_US_\d+\w*>/)?.[0];
+const ssnPlaceholder3 = out3Text.match(/<NUMERO_SECU_US_\d+\w*>/)?.[0];
 if (!ssnPlaceholder1 || !ssnPlaceholder3 || ssnPlaceholder1 !== ssnPlaceholder3) {
   console.error(`FAIL: SSN placeholder not shared across docs (${ssnPlaceholder1} vs ${ssnPlaceholder3})`);
   process.exit(1);

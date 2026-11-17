@@ -29,7 +29,7 @@ import { Document, Packer, Paragraph, TextRun } from "docx";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT = path.resolve(__dirname, "..");
 const FRESH_BUNDLE = path.join(PROJECT, "dist", "server.bundle.mjs");
-const HOME_MODEL = path.join(os.homedir(), ".pii_shield", "models", "gliner-pii-base-v1.0", "model.onnx");
+const HOME_MODEL = path.join(os.homedir(), ".pii_shield", "models", "gliner_multi_pii-v1", "model.onnx");
 
 if (!fs.existsSync(FRESH_BUNDLE)) {
   console.error(`Missing fresh bundle at ${FRESH_BUNDLE}. Run 'npm run build' first.`);

@@ -29,6 +29,8 @@ export interface ReviewEntity {
 export interface ReviewOverrides {
   remove: number[];
   add: Array<{ text: string; type: string; start: number; end: number }>;
+  /** French fork: texts the reviewer merged into an existing label (same type). `from` takes the placeholder of `to`. */
+  merge?: Array<{ type: string; from: string; to: string }>;
 }
 
 /**

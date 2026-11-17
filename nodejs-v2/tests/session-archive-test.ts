@@ -60,9 +60,9 @@ function setupSession(sid: string): void {
   });
   saveReview(sid, {
     session_id: sid,
-    entities: [{ text: "Acme Corporation", type: "ORGANIZATION", start: 0, end: 16, score: 1, placeholder: "<ORG_1>" }],
+    entities: [{ text: "Acme Corporation", type: "ORGANIZATION", start: 0, end: 16, score: 1, placeholder: "<ORGANISATION_1>" }],
     original_text: "Acme Corporation    John Smith    jsmith@acme.com",
-    anonymized_text: "<ORG_1>     <PERSON_1>    <EMAIL_1>",
+    anonymized_text: "<ORGANISATION_1>     <PERSONNE_1>    <EMAIL_1>",
     overrides: { remove: [], add: [] },
     approved: false,
     timestamp: Date.now(),
@@ -100,9 +100,9 @@ async function main(): Promise<void> {
   check(after !== null, "session exists after import");
   check(after.documents.length === 1, "documents survived roundtrip");
   check(after.documents[0].source_hash === "sha256:feedbeef", "doc source_hash survived");
-  check(after.mapping["<ORG_1>"] === "Acme Corporation", "mapping <ORG_1> survived");
+  check(after.mapping["<ORGANISATION_1>"] === "Acme Corporation", "mapping <ORGANISATION_1> survived");
   check(after.state.typeCounters.get("ORGANIZATION") === 1, "state typeCounters survived");
-  check(after.state.seenExact.get("ORGANIZATION::acme corporation") === "<ORG_1>",
+  check(after.state.seenExact.get("ORGANIZATION::acme corporation") === "<ORGANISATION_1>",
     "state seenExact survived");
 
   // 2. Wrong passphrase.

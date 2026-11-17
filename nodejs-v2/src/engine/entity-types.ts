@@ -3,8 +3,10 @@
  * Ported from pii_shield_server.py lines 361-392
  */
 
+import { REFERENTIEL_ETIQUETTES } from "./fr-referentiel.js";
+
 /** All entity types supported by PII Shield */
-export const SUPPORTED_ENTITIES = [
+const BASE_ENTITIES = [
   "PERSON", "ORGANIZATION", "LOCATION", "NRP",
   "EMAIL_ADDRESS", "PHONE_NUMBER", "URL", "IP_ADDRESS",
   "ID_DOC", "CREDIT_CARD", "IBAN_CODE", "CRYPTO",
@@ -20,7 +22,12 @@ export const SUPPORTED_ENTITIES = [
   "MEDICAL_LICENSE",
 ] as const;
 
-export type EntityType = (typeof SUPPORTED_ENTITIES)[number];
+// French types (organization sub-types, person roles, SIRET, address, city, "to check" keys…) come from the
+// reference (fr-referentiel.ts), the single list that also feeds the review panel.
+const FR_TYPES = REFERENTIEL_ETIQUETTES.flatMap(([, rows]) => rows.map(([type]) => type));
+export const SUPPORTED_ENTITIES: readonly string[] = [...new Set<string>([...BASE_ENTITIES, ...FR_TYPES])];
+
+export type EntityType = string;
 
 /** Short tag names for placeholders: ORGANIZATION → ORG, etc. */
 export const TAG_NAMES: Record<string, string> = {
@@ -60,6 +67,11 @@ export const TAG_NAMES: Record<string, string> = {
   FI_BUSINESS_ID: "FI_YID",
   MEDICAL_LICENSE: "MED_LIC",
 };
+
+// French short names (<PERSONNE_1>, <AVOCAT_1>, <TELEPHONE_1>…): the reference overrides the English ones.
+for (const [, rows] of REFERENTIEL_ETIQUETTES) {
+  for (const [type, , , , tag] of rows) TAG_NAMES[type] = tag;
+}
 
 /** Entity types that represent proper nouns (names, organizations, locations) */
 export const NAMED_ENTITY_TYPES = new Set([
