@@ -20,7 +20,7 @@ import { confirm } from "../prompts.js";
 import { createDownloadBar } from "../progress.js";
 import { green, gray, bold } from "../color.js";
 
-const RELEASE_URL = `https://github.com/gregmos/PII-Shield/releases/download/v${VERSION}/gliner-pii-base-v1.0.zip`;
+const RELEASE_URL = `https://github.com/pierremndg/PII-Shield-FR/releases/download/v${VERSION}/gliner_multi_pii-v1.zip`;
 
 interface InstallOptions {
   force?: boolean;
@@ -30,7 +30,7 @@ interface InstallOptions {
 function modelAlreadyInstalled(): boolean {
   const onnx = path.join(
     PATHS.MODELS_DIR,
-    "gliner-pii-base-v1.0",
+    "gliner_multi_pii-v1",
     "model.onnx",
   );
   if (!fs.existsSync(onnx)) return false;
@@ -101,7 +101,7 @@ export async function runInstallModel(opts: InstallOptions): Promise<number> {
 
   if (modelAlreadyInstalled() && !opts.force) {
     process.stdout.write(
-      `Model already installed at ${path.join(PATHS.MODELS_DIR, "gliner-pii-base-v1.0")}\n`,
+      `Model already installed at ${path.join(PATHS.MODELS_DIR, "gliner_multi_pii-v1")}\n`,
     );
     process.stdout.write(`Use --force to reinstall.\n`);
     return 0;
@@ -118,7 +118,7 @@ export async function runInstallModel(opts: InstallOptions): Promise<number> {
     zipPath = found.zip_path;
   } else {
     process.stdout.write(
-      `GLiNER model not found locally. Need to download ~634 MB from:\n  ${RELEASE_URL}\n\n`,
+      `GLiNER model not found locally. Need to download ~935 MB (892 MiB) from:\n  ${RELEASE_URL}\n\n`,
     );
     const ok = await confirm("Download now?", {
       defaultValue: true,
@@ -130,7 +130,7 @@ export async function runInstallModel(opts: InstallOptions): Promise<number> {
     }
 
     const cacheDir = path.join(PATHS.DATA_DIR, "cache");
-    zipPath = path.join(cacheDir, "gliner-pii-base-v1.0.zip");
+    zipPath = path.join(cacheDir, "gliner_multi_pii-v1.zip");
     cleanupZip = true;
     await downloadWithProgress(RELEASE_URL, zipPath);
   }

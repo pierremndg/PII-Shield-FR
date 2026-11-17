@@ -40,7 +40,7 @@ const PLACEHOLDER_RE = /<[A-Z][A-Z_]*_\d+[a-z]?>/;
 function modelInstalled(): boolean {
   const onnx = path.join(
     PATHS.MODELS_DIR,
-    "gliner-pii-base-v1.0",
+    "gliner_multi_pii-v1",
     "model.onnx",
   );
   if (!fs.existsSync(onnx)) return false;
@@ -64,7 +64,7 @@ async function ensureModelOrPrompt(opts: { yes?: boolean }): Promise<boolean> {
   }
 
   const ok = await confirm(
-    "GLiNER model not installed (~634 MB). Download now?",
+    "GLiNER model not installed (~935 MB (892 MiB)). Download now?",
     { defaultValue: true, assumeYes: opts.yes },
   );
   if (!ok) {

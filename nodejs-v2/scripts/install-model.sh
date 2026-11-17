@@ -2,12 +2,12 @@
 #
 # PII Shield v2 — GLiNER model installer (macOS / Linux)
 #
-# Downloads the GLiNER PII model (~634 MB) from the PII Shield GitHub release
-# into $HOME/.pii_shield/models/gliner-pii-base-v1.0/ so the PII Shield .mcpb
+# Downloads the GLiNER PII model (~935 MB (892 MiB)) from the PII Shield GitHub release
+# into $HOME/.pii_shield/models/gliner_multi_pii-v1/ so the PII Shield .mcpb
 # plugin can find it at runtime.
 #
 # One-liner usage (recommended — no file left on disk):
-#   curl -fsSL https://raw.githubusercontent.com/gregmos/PII-Shield/main/nodejs-v2/scripts/install-model.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/pierremndg/PII-Shield-FR/main/nodejs-v2/scripts/install-model.sh | bash
 #
 # Downloaded-file usage:
 #   macOS:  xattr -d com.apple.quarantine install-model.sh && chmod +x install-model.sh && ./install-model.sh
@@ -18,20 +18,20 @@
 
 set -euo pipefail
 
-MODEL_SLUG="gliner-pii-base-v1.0"
-MODEL_VERSION="v2.0.2"
+MODEL_SLUG="gliner_multi_pii-v1"
+MODEL_VERSION="v2.2.0-fr.1"
 TARGET="$HOME/.pii_shield/models/$MODEL_SLUG"
-MODEL_ZIP_URL="https://github.com/gregmos/PII-Shield/releases/download/${MODEL_VERSION}/${MODEL_SLUG}.zip"
+MODEL_ZIP_URL="https://github.com/pierremndg/PII-Shield-FR/releases/download/${MODEL_VERSION}/${MODEL_SLUG}.zip"
 
 echo ""
-echo "PII Shield — installing GLiNER model (~634 MB)"
+echo "PII Shield — installing GLiNER model (~935 MB (892 MiB))"
 echo "  Source: $MODEL_ZIP_URL"
 echo "  Target: $TARGET"
 echo ""
 
 mkdir -p "$TARGET"
 
-# Ensure unzip is available before we download a 634 MB file.
+# Ensure unzip is available before we download a 935 MB (892 MiB) file.
 if ! command -v unzip >/dev/null 2>&1; then
   echo "ERROR: \`unzip\` is required but not found in PATH." >&2
   echo "Install it first:" >&2
@@ -107,6 +107,6 @@ echo ""
 echo "[OK] Model installed at $TARGET (${model_mb} MB, total time ${overall_time_str})"
 echo ""
 echo "Next step: install the PII Shield .mcpb for your OS from"
-echo "  https://github.com/gregmos/PII-Shield/releases"
+echo "  https://github.com/pierremndg/PII-Shield-FR/releases"
 echo "into Claude Desktop (Settings -> Extensions -> drag-drop)."
 echo ""

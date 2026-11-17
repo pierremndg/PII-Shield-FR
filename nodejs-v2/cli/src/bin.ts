@@ -69,7 +69,7 @@ Examples:
     $ pii-shield deanonymize analysis.docx --session 2026-04-29_120000_ab12
 
 Full guide: see USAGE.md (bundled with the npm package, or
-https://github.com/gregmos/PII-Shield/blob/main/nodejs-v2/cli/USAGE.md).
+https://github.com/pierremndg/PII-Shield-FR/blob/main/nodejs-v2/cli/USAGE.md).
 `,
   );
 
@@ -195,7 +195,7 @@ Examples:
 
   program
     .command("install-model")
-    .description("Download and install the GLiNER model (~634 MB).")
+    .description("Download and install the GLiNER model (~935 MB (892 MiB)).")
     .option("--force", "reinstall even if a valid model is already present")
     .option("-y, --yes", "skip the download confirmation prompt")
     .action(async (opts) => {

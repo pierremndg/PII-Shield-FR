@@ -99,6 +99,6 @@ All other invariants (mapping shape, session_id format, `~/.pii_shield/` dirs, G
 | `pii-shield: command not found` after `npm install -g` | Node's global bin dir isn't on `$PATH`. Run `npm root -g` to find it; add the parent `bin/` to `PATH`. |
 | `Dynamic require of "node:events" is not supported` at startup | `dist/cli/bin.mjs` rebuilt without the `createRequire` polyfill. Re-run `npm run build:cli`. |
 | First `anonymize` takes 1–2 min | Expected. NER deps installer runs `npm ci --ignore-scripts` into `~/.pii_shield/deps/installs/<slug>/`. Subsequent runs are instant. Monitor `~/.pii_shield/audit/ner_init.log`. |
-| `model.onnx missing` in doctor output | Run `pii-shield install-model` — downloads ~634 MB from the GitHub release. Add `--yes` for non-interactive. |
+| `model.onnx missing` in doctor output | Run `pii-shield install-model` — downloads ~935 MB (892 MiB) from the GitHub release. Add `--yes` for non-interactive. |
 | Browser doesn't open during review | `open` package falls back to printing the URL. Copy `http://127.0.0.1:<port>/?token=…` from the terminal manually. |
 | HTTP server fails — port in use | We try `6789–6799`; if all are taken, the run aborts. Close other PII Shield processes or kill anything else listening on those ports. |

@@ -72,7 +72,7 @@ function isWritable(dir: string): string | null {
 }
 
 function checkModel(): string | null {
-  const modelDir = path.join(PATHS.MODELS_DIR, "gliner-pii-base-v1.0");
+  const modelDir = path.join(PATHS.MODELS_DIR, "gliner_multi_pii-v1");
   if (!fs.existsSync(modelDir)) {
     return `model dir missing — run \`pii-shield install-model\``;
   }

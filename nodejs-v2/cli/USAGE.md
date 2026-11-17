@@ -1,5 +1,7 @@
 # PII Shield CLI — User Guide
 
+> **Version française** : ce CLI est celui d'origine. Il n'a pas été testé avec les règles françaises, et `install-model` télécharge depuis le dépôt d'origine, pas notre modèle. Voir le [README racine](../../README.md).
+
 Standalone command-line tool that anonymizes PII in legal documents locally, sends only placeholders to any LLM (or just keeps the redacted file), and restores the real data on your machine when work is done. **PII never leaves your computer.**
 
 Pure offline, pure Node.js. No Claude Desktop / Claude Code / cloud account required.
@@ -33,7 +35,7 @@ Pure offline, pure Node.js. No Claude Desktop / Claude Code / cloud account requ
 |---|---|
 | Node.js | 18.0 or newer (`node -v`) |
 | RAM | 4 GB during NER inference |
-| Disk | ~1.5 GB (300 MB deps + 634 MB GLiNER model + space for outputs) |
+| Disk | ~1.5 GB (300 MB deps + 935 MB (892 MiB) GLiNER model + space for outputs) |
 | OS | Windows 10+, macOS 12+, Linux glibc 2.31+ |
 
 ### Install globally
@@ -51,18 +53,18 @@ pii-shield doctor
 
 You should see a list of green `[OK]` checks. The GLiNER model check will fail on a fresh machine — that's expected. Install it next.
 
-### Download the GLiNER model (one-off, ~634 MB)
+### Download the GLiNER model (one-off, ~935 MB (892 MiB))
 
 ```bash
 pii-shield install-model
-# > GLiNER model not found locally. Need to download ~634 MB from:
-# >   https://github.com/gregmos/PII-Shield/releases/...
+# > GLiNER model not found locally. Need to download ~935 MB (892 MiB) from:
+# >   https://github.com/pierremndg/PII-Shield-FR/releases/...
 # > Download now? [Y/n]
 ```
 
 Add `--yes` to skip the prompt (CI use).
 
-The model lives at `~/.pii_shield/models/gliner-pii-base-v1.0/`. It survives `npm uninstall -g pii-shield` — uninstall doesn't wipe your data dir.
+The model lives at `~/.pii_shield/models/gliner_multi_pii-v1/`. It survives `npm uninstall -g pii-shield` — uninstall doesn't wipe your data dir.
 
 ### First-run NER deps (~1–2 min, automatic)
 
@@ -78,7 +80,7 @@ pii-shield doctor
 
 # 2. Anonymize a single file
 pii-shield anonymize contract.pdf --no-review
-# → contract_anonymized.txt with <PERSON_1>, <ORG_1>, ... placeholders
+# → contract_anonymized.txt with <PERSONNE_1>, <ORGANISATION_1>, ... placeholders
 # → prints Session: 2026-04-29_120000_ab12
 
 # 3. Send the placeholder version to any LLM, copy back the result
@@ -252,14 +254,14 @@ Options:
 How the check works:
 
 1. Re-runs the engine over the anonymized text.
-2. For each detected entity, checks if its text is a placeholder from the session's mapping (`<PERSON_1>`, etc.). Placeholders are skipped.
+2. For each detected entity, checks if its text is a placeholder from the session's mapping (`<PERSONNE_1>`, etc.). Placeholders are skipped.
 3. Anything else → flagged as a possible leak (offset + 60-char context printed).
 
 Exit codes: 0 = clean, 1 = possible leaks (or model/session error), 2 = usage.
 
 ### `install-model`
 
-Download and install the GLiNER ONNX model (~634 MB) into `~/.pii_shield/models/`.
+Download and install the GLiNER ONNX model (~935 MB (892 MiB)) into `~/.pii_shield/models/`.
 
 ```bash
 pii-shield install-model           # interactive
@@ -267,7 +269,7 @@ pii-shield install-model --yes     # non-interactive (CI)
 pii-shield install-model --force   # reinstall over a present model
 ```
 
-If a valid `gliner-pii-base-v1.0/model.onnx` already exists (>100 MB), the command exits 0 without action unless `--force`.
+If a valid `gliner_multi_pii-v1/model.onnx` already exists (>100 MB), the command exits 0 without action unless `--force`.
 
 ### `doctor`
 
@@ -409,14 +411,14 @@ PII_NER_THRESHOLD=0.55 pii-shield anonymize article.txt
 | `PII_SHIELD_DATA_DIR` | `~/.pii_shield` | Root for all PII Shield state. Override to relocate everything (deps, model, audit, mappings) — useful for shared/networked installs |
 | `PII_SHIELD_MAPPINGS_DIR` | `<DATA_DIR>/mappings` | Override only the mappings dir — e.g. point to a network share so a team has shared sessions |
 | `PII_SHIELD_MODELS_DIR` | `<DATA_DIR>/models` | Override only the model directory |
-| `PII_SHIELD_MODEL_DOWNLOADS_DIR` | (auto) | Where `install-model` looks for an existing `gliner-pii-base-v1.0.zip` (Downloads / OneDrive / Desktop / Documents are scanned by default) |
+| `PII_SHIELD_MODEL_DOWNLOADS_DIR` | (auto) | Where `install-model` looks for an existing `gliner_multi_pii-v1.zip` (Downloads / OneDrive / Desktop / Documents are scanned by default) |
 
 ### File paths — where your data lives
 
 ```
 ~/.pii_shield/                     ← PII_SHIELD_DATA_DIR
 ├── models/
-│   └── gliner-pii-base-v1.0/       ← 634 MB, survives uninstall
+│   └── gliner_multi_pii-v1/       ← 935 MB (892 MiB), survives uninstall
 │       ├── model.onnx
 │       ├── tokenizer.json
 │       ├── tokenizer_config.json
@@ -433,7 +435,7 @@ PII_NER_THRESHOLD=0.55 pii-shield anonymize article.txt
 │   ├── ner_debug.log               ← per-call NER detail
 │   └── server.log                  ← lifecycle + errors
 └── cache/
-    └── gliner-pii-base-v1.0.zip    ← deleted after install (only present mid-download)
+    └── gliner_multi_pii-v1.zip    ← deleted after install (only present mid-download)
 ```
 
 The mapping files are **the one place real PII lives** outside your source documents. They have `0o700` permissions on POSIX. Delete a mapping = no way to deanonymize that session.
@@ -453,7 +455,7 @@ pii-shield anonymize NDA.docx --no-review
 
 # 2. Take NDA_anonymized.docx to ChatGPT / Gemini / Claude / Llama / DeepSeek
 #    Ask: "Summarise the obligations in this NDA. Keep tokens like
-#    <PERSON_1> verbatim." Save the response as summary.docx.
+#    <PERSONNE_1> verbatim." Save the response as summary.docx.
 
 # 3. Restore PII in the LLM output.
 pii-shield deanonymize summary.docx --session 2026-04-29_120000_ab12
@@ -466,7 +468,7 @@ The deanonymize step is pure string replacement — it works on any file format 
 
 ```
 You are reviewing an anonymized contract. Tokens in the form
-<PERSON_1>, <ORG_3>, <EMAIL_ADDRESS_2> are anonymous placeholders.
+<PERSONNE_1>, <ORGANISATION_3>, <EMAIL_ADDRESS_2> are anonymous placeholders.
 Keep them VERBATIM in your output — do not rephrase, translate,
 or split them. Treat them as opaque proper nouns.
 ```
@@ -476,8 +478,8 @@ or split them. Treat them as opaque proper nouns.
 ```bash
 pii-shield anonymize matter/contract.pdf matter/sow.pdf matter/nda.pdf matter/*.docx
 # → ONE session_id covers all files
-# → "Acme Corp" in any file → <ORG_1> in every file
-# → "John Smith" → <PERSON_1> consistently
+# → "Acme Corp" in any file → <ORGANISATION_1> in every file
+# → "John Smith" → <PERSONNE_1> consistently
 # → bulk-mode review panel opens with one tab per file
 ```
 
@@ -551,10 +553,10 @@ In a single `pii-shield anonymize file1 file2 …` invocation, **all files share
 
 | File | Original | Placeholder |
 |---|---|---|
-| `contract.pdf` | `Acme Corp` | `<ORG_1>` |
-| `sow.pdf` | `Acme Corp.` | `<ORG_1>` |
-| `nda.docx` | `Acme Corporation` | `<ORG_1a>` |
-| `email-thread.txt` | `Acme` | `<ORG_1b>` |
+| `contract.pdf` | `Acme Corp` | `<ORGANISATION_1>` |
+| `sow.pdf` | `Acme Corp.` | `<ORGANISATION_1>` |
+| `nda.docx` | `Acme Corporation` | `<ORGANISATION_1a>` |
+| `email-thread.txt` | `Acme` | `<ORGANISATION_1b>` |
 
 The variant suffixes (`a`, `b`, …) come from the family-based dedup: the longest form wins as canonical, and shorter / variant spellings get suffixed family numbers. On `deanonymize`, every variant maps back to its original verbatim text.
 
@@ -564,7 +566,7 @@ If a new document arrives mid-matter, extend the existing session rather than st
 
 ```bash
 pii-shield anonymize new-attachment.pdf --session 2026-04-29_120000_ab12
-# → "Acme Corp" still mapped to <ORG_1>, not a new <ORG_5>
+# → "Acme Corp" still mapped to <ORGANISATION_1>, not a new <ORGANISATION_5>
 ```
 
 ### Performance
@@ -605,13 +607,13 @@ Any LLM that accepts text input works as a drop-in replacement for Claude in the
 - DeepSeek, Mixtral, etc.
 - Internal corporate LLM gateways
 
-The contract is simple: send the LLM the **anonymized** file. The LLM treats `<PERSON_1>`, `<ORG_1>`, etc. as opaque tokens (most modern LLMs do this naturally). When the LLM produces a new document — memo, redline, summary — its output contains the same placeholder strings. You restore them locally.
+The contract is simple: send the LLM the **anonymized** file. The LLM treats `<PERSONNE_1>`, `<ORGANISATION_1>`, etc. as opaque tokens (most modern LLMs do this naturally). When the LLM produces a new document — memo, redline, summary — its output contains the same placeholder strings. You restore them locally.
 
 ### Prompt template
 
 ```
 You are reviewing an anonymized legal document. Tokens of the form
-<TYPE_NUMBER> (e.g. <PERSON_1>, <ORG_3>, <EMAIL_ADDRESS_2>) are anonymous
+<TYPE_NUMBER> (e.g. <PERSONNE_1>, <ORGANISATION_3>, <EMAIL_ADDRESS_2>) are anonymous
 placeholders for personal data. Keep them VERBATIM in your output — do
 not rephrase, translate, hyphenate, or split them. Treat them as opaque
 proper nouns.
@@ -620,12 +622,12 @@ proper nouns.
 …
 
 [Your task]
-Summarise the obligations of <ORG_1> under this NDA in a one-page memo.
+Summarise the obligations of <ORGANISATION_1> under this NDA in a one-page memo.
 ```
 
 ### What CAN'T you do?
 
-- **Don't ask the LLM to "guess" what the placeholders represent.** It can't, and even attempting it can leak side-channel information (the LLM might pattern-match `<PERSON_1>` against well-known names by frequency).
+- **Don't ask the LLM to "guess" what the placeholders represent.** It can't, and even attempting it can leak side-channel information (the LLM might pattern-match `<PERSONNE_1>` against well-known names by frequency).
 - **Don't paste real PII into the LLM "for context."** That defeats the whole flow. Anonymize everything you send.
 - **Don't expect tokens like `<DATE_OF_BIRTH_1>` to be order-preserving.** PII Shield assigns numbers per-type, not chronologically.
 - **Don't run anonymize on a file that's already partly anonymized.** The pipeline assumes raw input — running twice will treat existing placeholders as random text and may produce nested placeholders.
@@ -633,17 +635,17 @@ Summarise the obligations of <ORG_1> under this NDA in a one-page memo.
 ### What if the LLM mangles placeholders?
 
 LLMs occasionally:
-- Lowercase: `<person_1>` instead of `<PERSON_1>`
+- Lowercase: `<person_1>` instead of `<PERSONNE_1>`
 - Add spaces: `<PERSON 1>`
 - Translate the type: `<PERSONA_1>`
-- Wrap in quotes: `"<PERSON_1>"` (this still works — surrounding quotes don't break replacement)
+- Wrap in quotes: `"<PERSONNE_1>"` (this still works — surrounding quotes don't break replacement)
 
 Mangled placeholders won't be restored by `deanonymize`. If this happens, either:
 1. Tighten the prompt: "Keep tokens VERBATIM. Do not modify case or spacing inside `<…>`."
 2. Use a stricter LLM (most frontier models are fine).
 3. Sed-replace mangled forms back to canonical before deanonymize:
    ```bash
-   sed -E 's/<person_([0-9]+)>/<PERSON_\1>/g' summary.txt > fixed.txt
+   sed -E 's/<person_([0-9]+)>/<PERSONNE_\1>/g' summary.txt > fixed.txt
    pii-shield deanonymize fixed.txt --session <sid>
    ```
 
@@ -740,7 +742,7 @@ It does NOT:
 - Upload anything anywhere.
 - Open inbound network ports.
 
-The only outbound networking happens during `install-model` (downloads from `github.com/gregmos/PII-Shield/releases/`). Everything else is local.
+The only outbound networking happens during `install-model` (downloads from `github.com/pierremndg/PII-Shield-FR/releases/`). Everything else is local.
 
 ### Audit log
 
@@ -748,7 +750,7 @@ Every command writes to `~/.pii_shield/audit/mcp_audit.log`:
 
 ```
 2026-04-29T12:00:01.234Z >>> CALL anonymize_text_cli({"file":"/x/contract.pdf","char_count":8421,"session_id":""})
-2026-04-29T12:00:14.123Z <<< RESP anonymize_text_cli -> {"anonymized":"... <ORG_1> ..."} ... [127 chars total]
+2026-04-29T12:00:14.123Z <<< RESP anonymize_text_cli -> {"anonymized":"... <ORGANISATION_1> ..."} ... [127 chars total]
 ```
 
 PII is **truncated** at 200 chars in the log. The full PII is only in `mappings/<session>.json` (mode `0o700`).
@@ -997,14 +999,14 @@ To list at runtime in JSON: `pii-shield scan small.txt --json | jq '.entities[].
 - **`.docx` formatting preservation** is best-effort. Tracked changes (`<w:ins>`, `<w:del>`), comments, and split runs are handled. Exotic structures like SmartArt, embedded Excel objects, math equations may not be processed.
 - **Audit log is append-only**. Manage retention yourself or via OS log rotation.
 - **No cross-instance locking.** Two `pii-shield` processes on the same machine writing to the same session at the same time will produce a "last writer wins" mapping. Don't do this — but if you must, use distinct `PII_SHIELD_DATA_DIR` per process.
-- **Model is English-tuned.** GLiNER is multilingual but the bundled `gliner-pii-base-v1.0` was tuned on English-leaning legal corpora. Other languages work but recall is lower; bump `PII_NER_THRESHOLD` down to 0.20–0.25 to compensate.
+- **Model is English-tuned.** GLiNER is multilingual but the bundled `gliner_multi_pii-v1` was tuned on English-leaning legal corpora. Other languages work but recall is lower; bump `PII_NER_THRESHOLD` down to 0.20–0.25 to compensate.
 
 ---
 
 ## Getting help
 
-- Issues: <https://github.com/gregmos/PII-Shield/issues>
-- Source: <https://github.com/gregmos/PII-Shield>
+- Issues: <https://github.com/pierremndg/PII-Shield-FR/issues>
+- Source: <https://github.com/pierremndg/PII-Shield-FR>
 - License: MIT
 
 The CLI source code is in `nodejs-v2/cli/` of the repo. Dev notes in `nodejs-v2/cli/DEVELOPING.md`.
