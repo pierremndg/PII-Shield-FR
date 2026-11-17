@@ -4,8 +4,8 @@
     <strong>Anonymize documents before Claude sees them. Restore real data after analysis.</strong>
   </p>
   <p align="center">
-    <a href="https://github.com/gregmos/PII-Shield/stargazers"><img src="https://img.shields.io/github/stars/gregmos/PII-Shield?style=flat-square&color=yellow" alt="GitHub Stars"></a>
-    <a href="https://github.com/gregmos/PII-Shield/network/members"><img src="https://img.shields.io/github/forks/gregmos/PII-Shield?style=flat-square" alt="GitHub Forks"></a>
+    <a href="https://github.com/pierremndg/PII-Shield-FR/stargazers"><img src="https://img.shields.io/github/stars/pierremndg/PII-Shield-FR?style=flat-square&color=yellow" alt="GitHub Stars"></a>
+    <a href="https://github.com/pierremndg/PII-Shield-FR/network/members"><img src="https://img.shields.io/github/forks/pierremndg/PII-Shield-FR?style=flat-square" alt="GitHub Forks"></a>
     <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License: MIT"></a>
     <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-22%2B-339933?style=flat-square&logo=nodedotjs&logoColor=white" alt="Node.js 22+"></a>
   </p>
@@ -13,20 +13,67 @@
 
 ---
 
-PII Shield reads your documents locally, replaces all personal data with placeholders (`<PERSON_1>`, `<ORG_1>`, etc.), and — when you want analysis — sends only the anonymized text to an LLM. After analysis, PII Shield restores the original data into the final document — entirely on your machine. **PII never enters the API.**
+## Version française
+
+Cette version adapte PII Shield au droit français : règles françaises (SIRET, IBAN, NIR, noms, organisations, adresses…), marqueurs en français (`<PERSONNE_1>`), panneau de relecture en français, et un autre modèle de détection (`gliner_multi_pii-v1`, d'Urchade, licence Apache 2.0). Détail des changements : [FORK-FR.md](FORK-FR.md). Fork de [PII Shield](https://github.com/gregmos/PII-Shield) de Gregory (gregmos), licence MIT : la mention de copyright d'origine est conservée dans `LICENSE`.
+
+### Installer (utilisateur)
+
+Prérequis : Windows et Claude Desktop. Ni Node.js ni Git ni Python ne sont nécessaires.
+
+Les fichiers sont sur la page des releases de ce dépôt (https://github.com/pierremndg/PII-Shield-FR/releases, **pas encore publiée**) :
+- `pii-shield-fr-v2.2.0-fr.1.mcpb` : le plugin ;
+- `gliner_multi_pii-v1.zip` : le modèle de détection (environ 935 Mo (892 Mio), ONNX). C'est le modèle `gliner_multi_pii-v1` d'[Urchade](https://huggingface.co/urchade/gliner_multi_pii-v1) (licence Apache 2.0), dans la conversion ONNX publiée par [`onnx-community`](https://huggingface.co/onnx-community/gliner_multi_pii-v1), sans modification des poids. Nous l'avons mis en zip avec `scripts/build-model-zip.py`, et une note d'attribution y est jointe.
+
+1. Télécharger les deux fichiers. Laisser la zip du modèle dans le dossier `Téléchargements`, sans la décompresser.
+2. Dans Claude Desktop : Paramètres, Extensions, puis glisser `pii-shield-fr-v2.2.0-fr.1.mcpb`.
+3. Au premier usage, PII Shield affiche un panneau « modèle manquant ». Cliquer sur le bouton d'installation : le plugin trouve la zip dans `Téléchargements`, la vérifie et la range dans `~/.pii_shield/models/gliner_multi_pii-v1/`.
+4. Redémarrer Claude Desktop.
+
+Vérifier : demander à Claude d'anonymiser un texte de test. Les marqueurs sont en français (`<PERSONNE_1>`).
+
+**Solution de repli : sans la zip.** Le script `nodejs-v2/scripts/install-model.ps1` télécharge directement les six fichiers du modèle depuis Hugging Face (`onnx-community/gliner_multi_pii-v1`, à une version fixe du dépôt), vérifie leur empreinte SHA-256 (au moindre écart, rien n'est installé) et les range au même endroit. Le lancer à la main (`powershell -ExecutionPolicy Bypass -File install-model.ps1`) ou demander à Claude « installe le modèle PII Shield ». Il ne retélécharge rien si tout est déjà en place.
+
+État des essais : le `.mcpb` a été installé dans Claude Desktop sur la machine de l'auteur du fork et fonctionne. Essayés dans un dossier de test : l'installation de la zip par le code du plugin (statut « installed », 24 secondes) et le script de repli (27 secondes). Pas encore essayé : installation complète sur une machine neuve, avec le clic dans le panneau « modèle manquant ».
+
+### Construire soi-même
+
+Prérequis : Node.js 22 ou plus, Git, Python 3 (pour fabriquer la zip du modèle).
+
+1. Construire le plugin :
+
+```bash
+git clone https://github.com/pierremndg/PII-Shield-FR.git
+cd PII-Shield-FR/nodejs-v2
+npm ci
+npm install -g @anthropic-ai/mcpb
+npm run build:plugin
+```
+
+Le fichier produit est `nodejs-v2/dist/pii-shield-fr-v2.2.0-fr.1.mcpb`.
+
+2. Fabriquer la zip du modèle : `python scripts/build-model-zip.py`, depuis `nodejs-v2`. Le script télécharge les fichiers d'`onnx-community` (environ 1,2 Go), vérifie leurs empreintes SHA-256 auprès de Hugging Face et écrit `nodejs-v2/models/gliner_multi_pii-v1.zip` (environ 935 Mo (892 Mio), ignoré par git, avec `NOTICE.txt` d'attribution : Urchade, Apache 2.0, conversion `onnx-community`). Cette zip est celle de la release.
+
+Si le dépôt d'`onnx-community` disparaît : `scripts/export-gliner-colab.py` convertit soi-même les poids PyTorch d'Urchade dans Google Colab. Changer de modèle ou de version : `scripts/install-model.ps1` contient l'adresse du dépôt, la révision et les empreintes ; `scripts/build-model-zip.py` contient les mêmes noms de fichiers ; les mettre à jour ensemble.
+
+---
+
+PII Shield reads your documents locally, replaces all personal data with placeholders (`<PERSONNE_1>`, `<ORGANISATION_1>`, etc.), and — when you want analysis — sends only the anonymized text to an LLM. After analysis, PII Shield restores the original data into the final document — entirely on your machine. **PII never enters the API.**
 
 ```
 Document ──> [PII Shield on your machine] ──> anonymized text ──> [LLM analyzes] ──> [PII Shield restores] ──> Result
-              John Smith  → <PERSON_1>                                                <PERSON_1> → John Smith
-              Acme Corp.  → <ORG_1>                                                   <ORG_1>    → Acme Corp.
+              Jean Dupont  → <PERSONNE_1>                                              <PERSONNE_1> → Jean Dupont
+              Atelier Fictif SARL → <SARL_1>                                          <SARL_1>   → Atelier Fictif SARL
 ```
+
+> **Version française : seul le plugin Claude Desktop est couvert.** Le CLI `pii-shield` (ci-dessous) est celui d'origine : il n'a pas été testé avec les règles françaises, et sa commande `install-model` télécharge la zip depuis la release de ce dépôt, sans avoir été essayée.
 
 Two ways to use it, sharing the same engine:
 
 | Form | Who it's for | Install |
 |---|---|---|
 | **Standalone CLI** (`pii-shield`) | Anyone — anonymize files locally for any LLM (or just for compliance / GDPR). Pure offline. | `npm install -g pii-shield` |
-| **Claude Desktop / Code extension** (`.mcpb` + `.skill`) | Claude Desktop and Claude Code users — get tools + skill + in-chat HITL panel. | Drag the `.mcpb` from a release into Settings → Extensions, then upload the `.skill` |
+| **Claude Desktop / Code extension** (`.mcpb`) | Claude Desktop and Claude Code users — get the tools + in-chat HITL panel. | Drag the `.mcpb` from a release into Settings → Extensions |
 
 > **v2 is a complete Node.js rewrite.** The original Python product is still available — see [What happened to v1?](#what-happened-to-v1) below.
 
@@ -35,11 +82,11 @@ Two ways to use it, sharing the same engine:
 | | Feature | Details |
 |:-:|---------|---------|
 | 🔒 | **Zero PII in API** | `anonymize_file` reads the document on your machine and returns only a file path + session id. Claude reads the anonymized file from disk — PII never enters an API request. |
-| 🧠 | **GLiNER zero-shot NER** | [`knowledgator/gliner-pii-base-v1.0`](https://huggingface.co/knowledgator/gliner-pii-base-v1.0) over `onnxruntime-node` + `@xenova/transformers` (pinned triplet 1.22.0, deterministic `npm ci`). Handles ALL-CAPS, domain-specific names, multilingual text. No Python, no PyTorch. |
+| 🧠 | **GLiNER zero-shot NER** | [`urchade/gliner_multi_pii-v1`](https://huggingface.co/urchade/gliner_multi_pii-v1) (Apache 2.0, version française) over `onnxruntime-node` + `@xenova/transformers` (pinned triplet 1.22.0, deterministic `npm ci`). Handles ALL-CAPS, domain-specific names, multilingual text. No Python, no PyTorch. |
 | 👤 | **Human-in-the-Loop review** | MCP Apps iframe UI rendered directly in Claude Desktop. Remove false positives, add missed entities — all occurrences updated automatically, no localhost browser detour. |
 | 📄 | **PDF + DOCX + plain text** | `.pdf`, `.docx` (formatting + tracked changes preserved), `.txt`, `.md`, `.csv`. Pure-JS `.docx` pipeline — reads, edits, restores without a Word / LibreOffice install. |
 | 🇪🇺 | **EU + UK pattern recognizers** | UK (NIN, NHS, passport, CRN, driving licence), DE (tax ID, social security), FR (NIR, CNI), IT (fiscal code, VAT), ES (DNI, NIE), CY (TIC, ID card), FI (henkilötunnus, Y-tunnus), EU-wide (VAT, passport) — on top of the generic pack (email, phone, IBAN, credit card, crypto, US IDs, medical licence). 35 entity types in total. |
-| 🔗 | **Entity deduplication** | "Acme" → `<ORG_1>`, "Acme Corp." → `<ORG_1a>`, "Acme Corporation" → `<ORG_1b>`. Canonical form picked once; every variant maps back to the same real value on deanonymize. |
+| 🔗 | **Entity deduplication** | "Acme" → `<ORGANISATION_1>`, "Acme Corp." → `<ORGANISATION_1a>`, "Acme Corporation" → `<ORGANISATION_1b>`. Canonical form picked once; every variant maps back to the same real value on deanonymize. |
 | 💾 | **Cross-session deanonymize** | Each anonymized `.docx` carries its `session_id` in Word custom properties. Weeks later, in a brand new chat, drop the file in and `deanonymize_docx` restores PII from the embedded id — nothing to remember. |
 | 📦 | **Multi-file sessions** | Anonymize N related documents under one `session_id`; identical entities share the same placeholder across files. One `deanonymize_text` / `deanonymize_docx` call restores PII everywhere. |
 | 🤝 | **Team handoff** | `export_session(passphrase)` packs the mapping + anonymized documents into an encrypted `.pii-session` archive (AES-GCM via scrypt). Colleague runs `import_session` with the passphrase — PII never transits. |
@@ -47,13 +94,15 @@ Two ways to use it, sharing the same engine:
 
 ## Standalone CLI — `pii-shield`
 
+> Non couvert par la version française (voir la note plus haut). Texte d'origine, conservé tel quel.
+
 If you don't use Claude Desktop / Claude Code, install the CLI globally and run it on any file. Works on **20–30 documents in one session** with shared placeholders across files.
 
 ```bash
 npm install -g pii-shield
 
 pii-shield doctor                                       # health check
-pii-shield install-model                                # download GLiNER (~634 MB, one-off)
+pii-shield install-model                                # download GLiNER (~935 MB (892 MiB), one-off)
 
 # anonymize one file
 pii-shield anonymize contract.pdf --no-review
@@ -92,13 +141,14 @@ The CLI uses the same engine, mappings, and audit log as the MCP variants. Sessi
 
 ### Step 1 — download the artefacts
 
-Pick the `.mcpb` for your OS plus the skill bundle:
+Version française : les fichiers sont sur la page des releases de ce dépôt (https://github.com/pierremndg/PII-Shield-FR/releases, **pas encore publiée**) :
 
 | File | What | OS |
 |---|---|---|
-| [`pii-shield-v2.2.0-windows-linux.mcpb`](https://github.com/gregmos/PII-Shield/releases/download/v2.2.0/pii-shield-v2.2.0-windows-linux.mcpb) | ~700 KB — uses host Node | **Windows / Linux** |
-| [`pii-shield-v2.2.0-macos.mcpb`](https://github.com/gregmos/PII-Shield/releases/download/v2.2.0/pii-shield-v2.2.0-macos.mcpb) | ~83 MB — bundles Node 24.15.0 | **macOS** (arm64 + x64) |
-| [`pii-contract-analyze.skill`](https://github.com/gregmos/PII-Shield/releases/download/v2.2.0/pii-contract-analyze.skill) | ~25 KB — contract analysis skill | any |
+| `pii-shield-fr-v2.2.0-fr.1.mcpb` | Plugin (règles françaises, panneau en français) | **Windows** |
+| `gliner_multi_pii-v1.zip` | Modèle de détection (environ 935 Mo (892 Mio), ONNX) : à laisser dans `Téléchargements` | any |
+
+Pas de version macOS dans cette version.
 
 ### Step 2 — install the MCP extension
 
@@ -106,18 +156,11 @@ Claude Desktop → **Settings → Extensions → Advanced Settings → Install e
 
 On the first tool call PII Shield runs `npm ci --ignore-scripts` to install a pinned, deterministic set of runtime deps (`onnxruntime-node`, `@xenova/transformers`, `gliner`) into `~/.pii_shield/deps/installs/<slug>/`. 2–3 minutes once per machine, instant thereafter.
 
-### Step 3 — upload the skill
-
-Claude Desktop → **Customize → Skills → + → Upload a skill** → select `pii-contract-analyze.skill`.
-
-The skill orchestrates the end-to-end contract anonymization + analysis flow — Claude uses it to drive `anonymize_file` → HITL review → analysis → `deanonymize_docx` without you spelling out each step.
-
-### Step 4 — use it
+### Step 3 — use it
 
 1. Start a new conversation in Claude Desktop
-2. Select the **pii-contract-analyze** skill
-3. **Connect a folder** containing your document (click the folder icon)
-4. Tell Claude what you need:
+2. **Connect a folder** containing your document (click the folder icon)
+3. Tell Claude what you need (no skill is shipped with this version: ask for the anonymization in your own words, Claude calls the tools):
 
 ```
 Analyze risks for the purchaser in contract.pdf and prepare a short memo
@@ -127,10 +170,9 @@ Analyze risks for the purchaser in contract.pdf and prepare a short memo
 
 The very first time you ask Claude to anonymize anything, PII Shield notices the NER model isn't on disk yet and opens an **in-chat install panel**. You see two buttons:
 
-1. **Download model** — opens your default browser, downloads `gliner-pii-base-v1.0.zip` (~634 MB) from the release. Browser handles the transfer (no Defender / SmartScreen issues with unsigned scripts).
+1. **Download model** — opens the page of the ONNX conversion of the model (onnx-community). The release of this repository has the ready-to-use ONNX zip `gliner_multi_pii-v1.zip` (~935 MB (892 MiB)): save it in `Téléchargements`.
 2. **Install downloaded ZIP** — PII Shield finds the ZIP in your Downloads / OneDrive / Desktop / Documents folder, validates it, atomic-extracts it into `~/.pii_shield/models/`, and re-initializes NER. Anonymization continues automatically.
-
-No terminal, no scripts. Subsequent runs skip the panel entirely.
+No terminal needed. Fallback without the ZIP: the script `nodejs-v2/scripts/install-model.ps1` downloads the model files from Hugging Face (see the French section above). Subsequent runs skip the panel entirely.
 
 > ⚠️ **Do NOT attach files directly to anonymize.** When you attach a file, Claude Desktop sends its content in the API request — Claude sees raw data before PII Shield can process it. **Connect a folder** instead — Claude only gets the file path and calls `anonymize_file` locally.
 
@@ -178,11 +220,11 @@ Plain `.txt` / `.md` output has no place to embed metadata, so the `deanonymize_
 Anonymize several related documents under one `session_id`:
 
 1. First call: `anonymize_file(path_A)` — server returns `session_id=SID123`.
-2. Second call: `anonymize_file(path_B, session_id="SID123")` — PII Shield extends the same mapping. Identical entities across the two files share the **same placeholder** (`Acme Corp.` becomes `<ORG_1>` in both).
+2. Second call: `anonymize_file(path_B, session_id="SID123")` — PII Shield extends the same mapping. Identical entities across the two files share the **same placeholder** (`Acme Corp.` becomes `<ORGANISATION_1>` in both).
 3. You write a memo in Claude that mixes placeholders from both files.
 4. One `deanonymize_text(..., session_id="SID123")` call on the memo restores PII everywhere.
 
-The `pii-contract-analyze` skill drives this automatically when the user uploads N ≥ 2 files and confirms they belong to one matter. See `plugin/skills/pii-contract-analyze/references/bulk-mode.md` for the full decision tree.
+Ask Claude to anonymize the files in one session (same `session_id`) and to restore them with one `deanonymize_text` call.
 
 ## Team handoff — export / import a session
 
@@ -211,19 +253,6 @@ PII never leaves the anonymized documents in transit. The archive format is vers
 | `find_file` | Find a file by name in the configured working directory. |
 | `scan_text` | Detect PII without anonymizing (preview mode). |
 | `export_session` / `import_session` | Portability — hand a session between hosts. |
-
-## Skill modes
-
-The included `pii-contract-analyze` skill supports:
-
-| Mode | Description |
-|------|-------------|
-| **MEMO** | Legal analysis memo with risk assessment |
-| **REDLINE** | Tracked changes with Word-native revision marks |
-| **SUMMARY** | Brief overview of key terms and obligations |
-| **COMPARISON** | Side-by-side diff of two documents |
-| **BULK** | Process up to 5 files with prefixed placeholders |
-| **ANONYMIZE-ONLY** | Just anonymize, no analysis |
 
 ## Detected entity types
 
@@ -295,9 +324,6 @@ PII-Shield/
 │   ├── plugin/
 │   │   ├── build-plugin.mjs                          # thin .mcpb builder
 │   │   ├── build-mac-binary.mjs                      # darwin-universal .mcpb builder (bundles Node 24.15.0)
-│   │   └── skills/
-│   │       ├── pii-contract-analyze/                 # canonical skill source (SKILL.md + references/*.md)
-│   │       └── pii-contract-analyze.zip              # release artefact — auto-rebuilt from the source dir by build-plugin.mjs
 │   ├── scripts/
 │   │   ├── smoke-protocol.mjs                       # MCP protocol round-trip smoke
 │   │   ├── smoke-setup-panel.mjs                    # Setup-panel + install-tool smoke
@@ -337,7 +363,7 @@ v2 is a complete architectural reset — Node.js, pure-JS `.docx`, MCP Apps UI, 
 
 PII Shield builds on excellent open-source projects:
 
-- **[GLiNER](https://github.com/urchade/GLiNER)** + [`knowledgator/gliner-pii-base-v1.0`](https://huggingface.co/knowledgator/gliner-pii-base-v1.0) — zero-shot NER backbone.
+- **[GLiNER](https://github.com/urchade/GLiNER)** + [`urchade/gliner_multi_pii-v1`](https://huggingface.co/urchade/gliner_multi_pii-v1) — zero-shot NER backbone (the original product used `knowledgator/gliner-pii-base-v1.0`).
 - **[onnxruntime-node](https://github.com/microsoft/onnxruntime)** — the CPU inference engine.
 - **[`@xenova/transformers`](https://github.com/xenova/transformers.js)** — tokenizer + HF weights loader on top of ONNX Runtime.
 - **[docx](https://github.com/dolanmiu/docx)** + **[jszip](https://stuk.github.io/jszip/)** + **[@adeu/core](https://github.com/dealfluence/adeu)** — pure-JS `.docx` read / write / track-changes.

@@ -12,12 +12,10 @@ Developer-facing docs for the Node.js MCP server that lives under `nodejs-v2/`. 
 | `src/docx/`, `src/pdf/`, `src/mapping/`, `src/chunking/` | Document IO + session state. Pure JS, no Python. |
 | `src/audit/`, `src/sidecar/` | Audit log + bootstrap beacon that stays writable even when Claude Desktop drops stderr. |
 | `src/portability/session-archive.ts` | `export_session` / `import_session` round-trip (encrypted `.pii-session` archive). |
-| `plugin/build-plugin.mjs` | Builds the thin Windows/Linux `.mcpb` (step 0 also refreshes `plugin/skills/pii-contract-analyze.zip` from the live source dir). |
+| `plugin/build-plugin.mjs` | Builds the thin Windows/Linux `.mcpb`. |
 | `plugin/build-mac-binary.mjs` | Builds the darwin-universal `.mcpb` with bundled Node 24.15.0. |
 | `plugin/build-testkit.mjs` | Packages the internal tester bundle (`pii-shield-testkit-*.zip`). NOT public. |
-| `plugin/skills/pii-contract-analyze/` | Skill source (SKILL.md + `references/*.md`). Single source of truth. |
-| `plugin/skills/pii-contract-analyze.zip` | Auto-rebuilt release artefact. Don't hand-edit; run `npm run build:plugin` to refresh. |
-| `scripts/install-model.{ps1,bat,sh,command}` | End-user model installer (downloads `gliner-pii-base-v1.0.zip` from the GitHub release). |
+| `scripts/install-model.{ps1,bat,sh,command}` | End-user model installer. `install-model.ps1` is the fallback: it downloads the model files directly from Hugging Face (onnx-community, fixed revision, SHA-256 checked). The main path is the model zip in the GitHub release (built by `build-model-zip.py`); `.sh`/`.command` still use the original release address (not updated). |
 | `scripts/smoke-protocol.mjs` | MCP protocol round-trip smoke (initialize → tools/list → resources/list → tools/call). |
 | `scripts/smoke-sharp-shim.mjs` | Focused clean-install smoke for the deps-aware sharp Module._load shim. |
 | `ui/` | Vite source for the MCP Apps review iframe. `vite build` produces a single-file `dist/ui/review.html` that esbuild inlines into `dist/server.bundle.mjs`. |
@@ -29,7 +27,7 @@ Developer-facing docs for the Node.js MCP server that lives under `nodejs-v2/`. 
 # fails on hosts without libvips — runtime shim intercepts sharp anyway).
 npm ci --ignore-scripts --legacy-peer-deps
 
-# Build the thin .mcpb → dist/pii-shield-v<version>.mcpb
+# Build the thin .mcpb → dist/pii-shield-fr-v<version>.mcpb
 npm run build:plugin
 
 # Also build the darwin-universal .mcpb (downloads Node 24.15.0 arm64 + x64
@@ -48,8 +46,8 @@ npm run smoke:sharp-shim
 
 `npm run build:plugin` writes three artefacts to `dist/`:
 
-- `pii-shield-v<version>-plugin.zip` — legacy `.zip` for non-`.mcpb` hosts
-- `pii-shield-v<version>.mcpb` — the actual MCPB (what you drag into Claude Desktop on Windows/Linux)
+- `pii-shield-fr-v<version>-plugin.zip` — legacy `.zip` for non-`.mcpb` hosts
+- `pii-shield-fr-v<version>.mcpb` — the actual MCPB (what you drag into Claude Desktop on Windows/Linux)
 - `pii-shield-testkit-v<version>.zip` — internal tester bundle
 
 `npm run build:plugin:mac` additionally writes `pii-shield-v<version>-darwin-universal.mcpb` (~82 MB, bundles Node).
@@ -62,7 +60,7 @@ PII Shield keeps four kinds of data, intentionally in separate paths so `/plugin
 
 | Path | What lives here | Wiped on `/plugin remove`? |
 |---|---|---|
-| `~/.pii_shield/models/` | GLiNER model (634 MB ONNX + 4 tokenizer files) | **No** — manual only |
+| `~/.pii_shield/models/` | GLiNER model (935 MB (892 MiB) ONNX + 4 tokenizer files) | **No** — manual only |
 | `~/.pii_shield/deps/installs/<slug>/` | Runtime npm deps (`onnxruntime-node`, `@xenova/transformers`, `gliner`, pinned to 1.22.0 / 2.17.2 / 0.0.19). `<slug>` is an ORT-triplet-pin hash so multiple pin sets can coexist. | **No** |
 | `~/.pii_shield/audit/` | Append-only audit logs (`mcp_audit.log`, `ner_init.log`, `pii_shield_server.log`). Used as the "proof that no PII left the machine" artefact. | **No** |
 | `~/.pii_shield/mappings/` | Per-session placeholder ↔ real-PII map. 0o700 permissions on POSIX. TTL-based cleanup on startup (`PII_MAPPING_TTL_DAYS`, default 7). | **No** |
@@ -71,12 +69,12 @@ All four dirs share the same `~/.pii_shield/` root so `/plugin remove` never wip
 
 ## Model auto-discovery order
 
-If `~/.pii_shield/models/gliner-pii-base-v1.0/` isn't present at startup, `ensureModelFiles()` walks a BFS:
+If `~/.pii_shield/models/gliner_multi_pii-v1/` isn't present at startup, `ensureModelFiles()` walks a BFS:
 
 1. `models_path` from extension settings
-2. `~/.pii_shield/models/gliner-pii-base-v1.0/` (default install-model target)
-3. `$CLAUDE_PLUGIN_DATA/models/gliner-pii-base-v1.0/` (old fat-bundle dev layout)
-4. `~/Downloads/gliner-pii-base-v1.0/` (if the user hand-moved the folder)
+2. `~/.pii_shield/models/gliner_multi_pii-v1/` (default install-model target)
+3. `$CLAUDE_PLUGIN_DATA/models/gliner_multi_pii-v1/` (old fat-bundle dev layout)
+4. `~/Downloads/gliner_multi_pii-v1/` (if the user hand-moved the folder)
 5. Plugin-relative (next to `server.bundle.mjs`)
 
 First valid dir wins. If nothing is found the server returns a `needs_setup` envelope — see [root README](../README.md) for the user flow.
@@ -100,10 +98,6 @@ Means the sharp shim isn't intercepting correctly. Text-only NER doesn't need sh
 Install the `darwin-universal` variant (`pii-shield-v<version>-macos.mcpb` on the release page). Thin `.mcpb` hits Claude Desktop's built-in Node which closes the transport after `initialize` on Tahoe-era builds. The darwin variant ships its own Node and runs via `server.type="binary"` + `launch.sh`.
 
 Debug log lives at `/tmp/piish-banner-debug.log` (Unix) or `%TEMP%\piish-banner-debug.log` (Windows) — written from the very first instruction of `server.bundle.mjs` so it survives the transport dying.
-
-### Skill references don't load
-
-If `pii-contract-analyze.zip` has `references/references/*.md` (double-nested) instead of `references/*.md`, the skill is broken — SKILL.md reads by the flat path. Rebuild via `npm run build:plugin` (step 0 regenerates the zip from source).
 
 ## License
 

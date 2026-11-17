@@ -1,15 +1,17 @@
 # pii-shield
 
+> **Version française** : ce CLI est celui d'origine. Il n'a pas été testé avec les règles françaises, et `install-model` télécharge la zip depuis la release de ce dépôt, sans avoir été essayée. Voir le [README racine](../README.md).
+
 > Anonymize PII in legal documents locally. Node.js CLI — 35 entity types via GLiNER NER + EU/UK/US/FI patterns. Reads `.pdf` / `.docx` / `.txt`. Pure offline, no Python.
 
-[![npm](https://img.shields.io/npm/v/pii-shield.svg?style=flat-square)](https://www.npmjs.com/package/pii-shield) [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/gregmos/PII-Shield/blob/main/LICENSE) [![Node](https://img.shields.io/badge/node-22%2B-339933.svg?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![npm](https://img.shields.io/npm/v/pii-shield.svg?style=flat-square)](https://www.npmjs.com/package/pii-shield) [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/pierremndg/PII-Shield-FR/blob/main/LICENSE) [![Node](https://img.shields.io/badge/node-22%2B-339933.svg?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 
-PII Shield reads your documents on your machine, replaces personal data with placeholders (`<PERSON_1>`, `<ORG_1>`, etc.), and — when you want analysis — sends only the anonymized text to an LLM. After analysis, PII Shield restores the original data into the final document — entirely on your machine. **PII never enters the API.**
+PII Shield reads your documents on your machine, replaces personal data with placeholders (`<PERSONNE_1>`, `<ORGANISATION_1>`, etc.), and — when you want analysis — sends only the anonymized text to an LLM. After analysis, PII Shield restores the original data into the final document — entirely on your machine. **PII never enters the API.**
 
 ```
 Document ──> [pii-shield on your machine] ──> anonymized text ──> [LLM analyzes] ──> [pii-shield restores] ──> Result
-              John Smith  → <PERSON_1>                                                <PERSON_1> → John Smith
-              Acme Corp.  → <ORG_1>                                                   <ORG_1>    → Acme Corp.
+              John Smith  → <PERSONNE_1>                                                <PERSONNE_1> → John Smith
+              Acme Corp.  → <ORGANISATION_1>                                                   <ORGANISATION_1>    → Acme Corp.
 ```
 
 ## Install
@@ -24,7 +26,7 @@ Requires Node 22+.
 
 ```bash
 pii-shield doctor                                       # health check
-pii-shield install-model                                # download GLiNER (~634 MB, one-off)
+pii-shield install-model                                # download GLiNER (~935 MB (892 MiB), one-off)
 
 # anonymize one file (no review panel)
 pii-shield anonymize contract.pdf --no-review
@@ -51,7 +53,7 @@ pii-shield deanonymize contract_anonymized.pdf --session <session-id>
 | `pii-shield install-model [--yes]` | Download/extract the GLiNER ONNX model. |
 | `pii-shield doctor [--json]` | Check Node, deps, model, paths. |
 
-See `pii-shield --help <command>` or the [full CLI manual](https://github.com/gregmos/PII-Shield/blob/main/nodejs-v2/cli/USAGE.md) for every flag.
+See `pii-shield --help <command>` or the [full CLI manual](https://github.com/pierremndg/PII-Shield-FR/blob/main/nodejs-v2/cli/USAGE.md) for every flag.
 
 ## What it detects
 
@@ -63,12 +65,12 @@ See `pii-shield --help <command>` or the [full CLI manual](https://github.com/gr
 - **EU-wide**: VAT, passport
 - **Country-specific**: DE (tax ID, social security), FR (NIR, CNI), IT (fiscal code, VAT), ES (DNI, NIE), CY (TIC, ID card), FI (henkilötunnus, Y-tunnus)
 
-Authoritative list: [`src/engine/entity-types.ts`](https://github.com/gregmos/PII-Shield/blob/main/nodejs-v2/src/engine/entity-types.ts).
+Authoritative list: [`src/engine/entity-types.ts`](https://github.com/pierremndg/PII-Shield-FR/blob/main/nodejs-v2/src/engine/entity-types.ts).
 
 ## Highlights
 
-- **GLiNER zero-shot NER** ([`knowledgator/gliner-pii-base-v1.0`](https://huggingface.co/knowledgator/gliner-pii-base-v1.0)) over `onnxruntime-node` + `@xenova/transformers`. Handles ALL-CAPS, domain-specific names, multilingual text. Pure JS — no Python, no PyTorch.
-- **Entity deduplication** — "Acme" → `<ORG_1>`, "Acme Corp." → `<ORG_1a>`, "Acme Corporation" → `<ORG_1b>`. Canonical form picked once; every variant maps back to the same real value on deanonymize.
+- **GLiNER zero-shot NER** ([`urchade/gliner_multi_pii-v1`](https://huggingface.co/urchade/gliner_multi_pii-v1)) over `onnxruntime-node` + `@xenova/transformers`. Handles ALL-CAPS, domain-specific names, multilingual text. Pure JS — no Python, no PyTorch.
+- **Entity deduplication** — "Acme" → `<ORGANISATION_1>`, "Acme Corp." → `<ORGANISATION_1a>`, "Acme Corporation" → `<ORGANISATION_1b>`. Canonical form picked once; every variant maps back to the same real value on deanonymize.
 - **Multi-file sessions** — anonymize N related files in one batch; identical entities share the same placeholder across files. One `deanonymize` call restores PII everywhere.
 - **Cross-session deanonymize** — every anonymized `.docx` carries its `session_id` in Word custom properties. Weeks later in a fresh shell: `pii-shield deanonymize file_anonymized.docx` — no need to remember the id.
 - **Team handoff** — `pii-shield sessions export <id> --passphrase` ships an encrypted `.pii-session` archive (AES-GCM via scrypt). Colleague runs `import` — PII never transits.
@@ -79,7 +81,7 @@ Authoritative list: [`src/engine/entity-types.ts`](https://github.com/gregmos/PI
 
 | Path | What lives here |
 |---|---|
-| `~/.pii_shield/models/` | GLiNER model (~634 MB) |
+| `~/.pii_shield/models/` | GLiNER model (~935 MB (892 MiB)) |
 | `~/.pii_shield/deps/installs/<slug>/` | Pinned runtime deps (`onnxruntime-node`, `@xenova/transformers`, `gliner`) — installed lazily on first NER call |
 | `~/.pii_shield/mappings/` | Per-session placeholder ↔ real-PII maps (0o700 on POSIX; TTL via `PII_MAPPING_TTL_DAYS`, default 7 days) |
 | `~/.pii_shield/audit/` | Append-only audit logs |
@@ -88,9 +90,9 @@ The first ever `anonymize` call runs `npm ci --ignore-scripts` into `deps/instal
 
 ## Also available as a Claude Desktop / Claude Code extension
 
-A `.mcpb` build of the same engine plugs into Claude Desktop and Claude Code with an in-chat HITL review panel. Drag the `.mcpb` from a [release](https://github.com/gregmos/PII-Shield/releases/latest) into **Settings → Extensions → Advanced Settings → Install extension**, then upload the `.skill`. Sessions are interchangeable: anonymize on the CLI, deanonymize from Claude Desktop, or vice versa — the mapping store is shared.
+A `.mcpb` build of the same engine plugs into Claude Desktop and Claude Code with an in-chat HITL review panel. Drag the `.mcpb` from a [release](https://github.com/pierremndg/PII-Shield-FR/releases/latest) into **Settings → Extensions → Advanced Settings → Install extension**. Sessions are interchangeable: anonymize on the CLI, deanonymize from Claude Desktop, or vice versa — the mapping store is shared.
 
-See the [main README](https://github.com/gregmos/PII-Shield#claude-desktop--claude-code) for the full Claude flow.
+See the [main README](https://github.com/pierremndg/PII-Shield-FR#claude-desktop--claude-code) for the full Claude flow.
 
 ## Troubleshooting
 
@@ -104,9 +106,9 @@ See the [main README](https://github.com/gregmos/PII-Shield#claude-desktop--clau
 
 ## Links
 
-- **Repo**: <https://github.com/gregmos/PII-Shield>
-- **Full CLI manual**: [`cli/USAGE.md`](https://github.com/gregmos/PII-Shield/blob/main/nodejs-v2/cli/USAGE.md)
-- **Issues**: <https://github.com/gregmos/PII-Shield/issues>
+- **Repo**: <https://github.com/pierremndg/PII-Shield-FR>
+- **Full CLI manual**: [`cli/USAGE.md`](https://github.com/pierremndg/PII-Shield-FR/blob/main/nodejs-v2/cli/USAGE.md)
+- **Issues**: <https://github.com/pierremndg/PII-Shield-FR/issues>
 
 ## License
 
