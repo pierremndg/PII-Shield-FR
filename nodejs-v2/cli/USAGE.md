@@ -1,5 +1,7 @@
 # PII Shield CLI — User Guide
 
+> Document d'origine (gregmos), peu modifié : il décrit le projet d'origine. Ce que la version française change : voir [FORK-FR.md](../../FORK-FR.md). Le CLI n'est pas couvert par la version française.
+
 > **Version française** : ce CLI est celui d'origine. Il n'a pas été testé avec les règles françaises, et `install-model` télécharge depuis le dépôt d'origine, pas notre modèle. Voir le [README racine](../../README.md).
 
 Standalone command-line tool that anonymizes PII in legal documents locally, sends only placeholders to any LLM (or just keeps the redacted file), and restores the real data on your machine when work is done. **PII never leaves your computer.**
@@ -961,7 +963,7 @@ tail -f ~/.pii_shield/audit/ner_init.log # NER bootstrap detail
 
 ## Detected entity types
 
-35 types in total. The full authoritative list is `nodejs-v2/src/engine/entity-types.ts` (`SUPPORTED_ENTITIES`).
+33 types in total. The full authoritative list is `nodejs-v2/src/engine/entity-types.ts` (`SUPPORTED_ENTITIES`).
 
 ### NER-based (GLiNER zero-shot)
 
@@ -985,7 +987,7 @@ tail -f ~/.pii_shield/audit/ner_init.log # NER bootstrap detail
 
 ### Country-specific
 
-`DE_TAX_ID`, `DE_SOCIAL_SECURITY`, `FR_NIR`, `FR_CNI`, `IT_FISCAL_CODE`, `IT_VAT`, `ES_DNI`, `ES_NIE`, `CY_TIC`, `CY_ID_CARD`, `FI_HETU`, `FI_BUSINESS_ID`.
+`DE_TAX_ID`, `DE_SOCIAL_SECURITY`, `FR_NIR`, `FR_CNI`, `IT_FISCAL_CODE`, `IT_VAT`, `ES_DNI`, `ES_NIE`, `CY_TIC`, `CY_ID_CARD`.
 
 To list at runtime in JSON: `pii-shield scan small.txt --json | jq '.entities[].type' | sort -u` (assuming sample file has at least one of each).
 

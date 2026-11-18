@@ -1,5 +1,7 @@
 # PII Shield — Testkit
 
+> **Obsolète.** Kit de test interne du projet d'origine (version 2.0.2, ancien modèle, macOS), conservé tel quel et non maintenu dans cette version. Voir [README.md](../../README.md) pour installer la version française.
+
 Contents:
 
 | File | Purpose |

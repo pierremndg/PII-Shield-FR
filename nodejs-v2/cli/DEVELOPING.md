@@ -1,5 +1,7 @@
 # PII Shield CLI — developer notes
 
+> Document d'origine (gregmos), peu modifié : il décrit le projet d'origine. Ce que la version française change : voir [FORK-FR.md](../../FORK-FR.md).
+
 Standalone CLI variant of PII Shield. Installs as a normal npm package (`pii-shield`) and runs entirely offline — no MCP host, no Claude required. Reuses the same `src/engine/`, `src/docx/`, `src/pdf/`, `src/mapping/`, `src/portability/`, and `src/audit/` modules as the `.mcpb` and Claude Code plugin builds.
 
 ## Layout

@@ -1,6 +1,6 @@
 # PII Shield, version française
 
-Ce document décrit ce que cette version change par rapport à PII Shield v2.2.0 (dépôt d'origine, licence MIT). Le code est dans `nodejs-v2/`.
+Ce document décrit ce que cette version change par rapport à PII Shield v2.2.0 (dépôt d'origine, licence MIT). Le code est dans `nodejs-v2/`. Ce document est technique : pour installer et utiliser, voir [README.md](README.md).
 
 ## Ce qui change
 
@@ -33,7 +33,7 @@ npm run build:plugin
 npm run smoke
 ```
 
-Tests (chacun : `npx tsx tests/<fichier>.ts`) : `fr-recognizers-test` (37), `fr-rules-test` (327), `fr-filters-test` (35), `french-courts-test` (27), `fr-ner-corrections-test` (10), plus les tests d'origine mis à jour avec les marqueurs français. `npm run smoke` charge le vrai modèle.
+Tests (chacun : `npx tsx tests/<fichier>.ts`) : `fr-recognizers-test` (37), `fr-rules-test` (327), `fr-filters-test` (38), `french-courts-test` (27), `fr-ner-corrections-test` (10), plus les tests d'origine mis à jour avec les marqueurs français. `npm run smoke` charge le vrai modèle.
 
 Cette version ne livre pas le skill `pii-contract-analyze` de l'original : il a été retiré (le plugin ne fournit que les outils).
 

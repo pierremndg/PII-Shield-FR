@@ -1,5 +1,7 @@
 # PII Shield v2 — developer notes
 
+> Document d'origine (gregmos), peu modifié : il décrit le projet d'origine. Ce que la version française change : voir [FORK-FR.md](../FORK-FR.md).
+
 Developer-facing docs for the Node.js MCP server that lives under `nodejs-v2/`. For end-user install instructions (download the `.mcpb`, run install-model, use the skill) see the [repo root README](../README.md).
 
 ## What's here
